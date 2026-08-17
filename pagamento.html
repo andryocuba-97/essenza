@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pagamento Seguro - Essenza</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: { colors: { 'essenza-black': '#111111', 'essenza-gold': '#CBA25B' } }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-50 font-montserrat h-screen flex flex-col">
+
+    <div class="bg-essenza-black text-center py-6 shadow-md">
+        <h1 class="font-cinzel text-2xl text-white tracking-widest">ESSENZA</h1>
+        <p class="text-essenza-gold text-[10px] tracking-widest uppercase">Checkout Seguro</p>
+    </div>
+
+    <!-- TELA DE REVISÃO E BOTÃO PAGAR -->
+    <div id="tela-pagamento" class="flex-1 flex flex-col items-center justify-center p-6 transition-opacity duration-500">
+        <div class="bg-white p-8 rounded-xl shadow-lg w-full max-w-sm text-center border-t-4 border-essenza-gold">
+            <p class="text-gray-500 text-sm mb-2">Total a pagar:</p>
+            <h2 id="valor-display" class="text-4xl font-bold text-essenza-black mb-8">R$ 0,00</h2>
+            
+            <div class="flex items-center justify-center gap-3 mb-8 bg-gray-100 p-4 rounded-lg">
+                <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <p class="text-xs font-semibold text-gray-700 uppercase">Conexão Criptografada</p>
+            </div>
+
+            <button onclick="simularPagamento()" class="w-full bg-green-600 text-white py-4 rounded-full font-bold text-lg uppercase tracking-wide shadow-md active:scale-95 transition-transform flex items-center justify-center gap-2">
+                <span id="btn-text">Confirmar Pagamento</span>
+                <svg id="loading-spinner" class="animate-spin h-5 w-5 text-white hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- TELA DE SUCESSO -->
+    <div id="tela-sucesso" class="hidden flex-1 flex-col items-center justify-center p-6 bg-green-50 animate-pulse">
+        <div class="w-24 h-24 bg-green-500 rounded-full flex items-center justify-center mb-6 shadow-xl">
+            <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+        </div>
+        <h2 class="text-2xl font-bold text-green-800 mb-2">Pagamento Aprovado!</h2>
+        <p class="text-center text-gray-600">Seu pedido já está sendo preparado com muito carinho.</p>
+        
+        <a href="index.html" class="mt-8 text-sm text-essenza-gold underline font-semibold">Voltar para a loja</a>
+    </div>
+
+    <script>
+        // Pega o valor passado na URL pelo QR Code
+        window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const valor = urlParams.get('valor');
+            if(valor) {
+                document.getElementById('valor-display').innerText = 'R$ ' + valor.replace('.', ',');
+            }
+        };
+
+        // Simula o processamento do banco (loading) e exibe sucesso
+        function simularPagamento() {
+            const btnText = document.getElementById('btn-text');
+            const spinner = document.getElementById('loading-spinner');
+            
+            btnText.innerText = "Processando...";
+            spinner.classList.remove('hidden');
+
+            // Aguarda 2 segundos para dar o sentimento de processamento real
+            setTimeout(() => {
+                document.getElementById('tela-pagamento').classList.add('hidden');
+                document.getElementById('tela-sucesso').classList.remove('hidden');
+                document.getElementById('tela-sucesso').style.display = 'flex';
+            }, 2000);
+        }
+    </script>
+</body>
+</html>
