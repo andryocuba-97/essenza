@@ -34,7 +34,7 @@
 <body class="font-montserrat bg-essenza-beige-light text-essenza-gray antialiased">
 
     <!-- NAVBAR -->
-    <nav class="fixed w-full z-50 bg-essenza-black/95 backdrop-blur-sm border-b border-essenza-gold/30">
+    <nav class="fixed w-full z-40 bg-essenza-black/95 backdrop-blur-sm border-b border-essenza-gold/30">
         <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
             <a href="#home" class="font-cinzel text-2xl text-essenza-beige-light tracking-widest hover:text-essenza-gold transition-colors">ESSENZA</a>
             
@@ -56,14 +56,14 @@
     <div class="pt-20 min-h-screen flex flex-col">
 
         <!-- ========================================== -->
-        <!-- PÁGINA 1: INÍCIO (HOME COMPLETÍSSIMA)      -->
+        <!-- PÁGINA 1: INÍCIO (HOME)                    -->
         <!-- ========================================== -->
         <section id="home" class="page-section active flex-1">
             
-            <!-- HERO -->
+            <!-- HERO COM SEU BANNER -->
             <div class="relative bg-essenza-black h-[85vh] flex flex-col items-center justify-center overflow-hidden">
-                <div class="absolute inset-0 z-0 opacity-40">
-                    <img src="https://images.unsplash.com/photo-1603006905003-be475563bc59?q=80&w=2000&auto=format&fit=crop" class="w-full h-full object-cover">
+                <div class="absolute inset-0 z-0 opacity-50">
+                    <img src="banner-home.png" class="w-full h-full object-cover">
                 </div>
                 <div class="z-10 text-center px-4 mt-10">
                     <h1 class="font-cinzel text-5xl md:text-7xl text-essenza-beige-light tracking-[0.25em] mb-4">ESSENZA</h1>
@@ -72,7 +72,7 @@
                         <p class="font-montserrat text-essenza-gold tracking-[0.3em] uppercase text-xs md:text-sm">Acenda sentimentos</p>
                         <div class="h-[1px] w-12 bg-essenza-gold"></div>
                     </div>
-                    <p class="text-essenza-beige-light font-light max-w-xl mx-auto mb-10 text-sm md:text-base opacity-90">Transforme o seu ambiente num santuário de paz e aconchego com nossas velas artesanais de cera 100% vegetal.</p>
+                    <p class="text-essenza-beige-light font-light max-w-xl mx-auto mb-10 text-sm md:text-base opacity-90 shadow-black drop-shadow-md">Transforme o seu ambiente num santuário de paz e aconchego com nossas velas artesanais de cera 100% vegetal.</p>
                     <a href="#catalogo" class="inline-block bg-essenza-gold text-essenza-black px-10 py-4 uppercase text-xs font-bold tracking-widest hover:bg-white transition-colors">Conheça a Coleção</a>
                 </div>
             </div>
@@ -88,7 +88,7 @@
                     <div class="flex flex-col items-center">
                         <span class="text-3xl mb-3">🔥</span>
                         <h4 class="font-bold text-xs uppercase tracking-widest text-essenza-black mb-1">Queima Limpa</h4>
-                        <p class="text-[10px] text-essenza-gray">Pavios de algodão puro sem chumbo.</p>
+                        <p class="text-[10px] text-essenza-gray">Pavios de algodão sem chumbo.</p>
                     </div>
                     <div class="flex flex-col items-center">
                         <span class="text-3xl mb-3">🧪</span>
@@ -114,18 +114,15 @@
                 </div>
                 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-8" id="vitrine-home">
-                    <!-- Gerado via JS para não duplicar código HTML -->
-                </div>
-                <div class="mt-8 text-center md:hidden">
-                    <a href="#catalogo" class="text-xs uppercase tracking-widest font-bold text-essenza-gold underline">Ver catálogo completo</a>
+                    <!-- Gerado via JS -->
                 </div>
             </div>
 
-            <!-- SOBRE O PROCESSO / BANNERS -->
+            <!-- SOBRE O PROCESSO / BANNER ARTE -->
             <div class="bg-essenza-black text-essenza-beige-light">
                 <div class="grid grid-cols-1 md:grid-cols-2">
                     <div class="h-96 md:h-auto overflow-hidden">
-                        <img src="https://images.unsplash.com/photo-1608181114410-b18cb3e7e220?q=80&w=1000&auto=format&fit=crop" class="w-full h-full object-cover opacity-80 hover:scale-105 transition-transform duration-1000">
+                        <img src="banner-arte.png" class="w-full h-full object-cover opacity-80 hover:scale-105 transition-transform duration-1000">
                     </div>
                     <div class="flex flex-col justify-center p-12 md:p-20 text-center md:text-left">
                         <p class="text-essenza-gold text-xs uppercase tracking-[0.3em] font-bold mb-4">Arte & Dedicação</p>
@@ -140,18 +137,16 @@
                 </div>
             </div>
 
-            <!-- NEWSLETTER / CUPOM -->
+            <!-- NEWSLETTER -->
             <div class="bg-essenza-beige-dark py-20 px-6 text-center">
                 <h2 class="font-cinzel text-3xl text-essenza-black tracking-widest mb-4">Clube Essenza</h2>
-                <p class="font-light text-essenza-gray max-w-lg mx-auto mb-8 text-sm">Inscreva-se em nossa newsletter para receber dicas de bem-estar, lançamentos antecipados e ganhe <strong class="text-essenza-black">10% OFF</strong> na sua primeira compra com o cupom <span class="bg-essenza-black text-essenza-gold px-2 py-1 font-bold">PROMO10</span>.</p>
-                
-                <form class="flex justify-center max-w-md mx-auto" onsubmit="event.preventDefault(); alert('E-mail cadastrado com sucesso! Aproveite seu cupom.'); this.reset();">
+                <p class="font-light text-essenza-gray max-w-lg mx-auto mb-8 text-sm">Inscreva-se em nossa newsletter e ganhe <strong class="text-essenza-black">10% OFF</strong> na sua primeira compra com o cupom <span class="bg-essenza-black text-essenza-gold px-2 py-1 font-bold">PROMO10</span>.</p>
+                <form class="flex justify-center max-w-md mx-auto" onsubmit="event.preventDefault(); alert('E-mail cadastrado com sucesso!'); this.reset();">
                     <input type="email" placeholder="Digite seu melhor e-mail" required class="flex-1 bg-white border border-gray-300 py-3 px-4 text-sm focus:outline-none focus:border-essenza-gold">
                     <button type="submit" class="bg-essenza-black text-essenza-beige-light px-6 py-3 text-xs uppercase font-bold tracking-widest hover:bg-essenza-gold hover:text-essenza-black transition-colors">Assinar</button>
                 </form>
             </div>
         </section>
-
 
         <!-- ========================================== -->
         <!-- PÁGINA 2: CATÁLOGO COMPLETO                -->
@@ -175,7 +170,6 @@
             <div id="grid-produtos" class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8"></div>
         </section>
 
-
         <!-- ========================================== -->
         <!-- PÁGINA 3: DETALHES DO PRODUTO              -->
         <!-- ========================================== -->
@@ -188,7 +182,6 @@
             </div>
         </section>
 
-
         <!-- ========================================== -->
         <!-- PÁGINA 4: SOBRE NÓS                        -->
         <!-- ========================================== -->
@@ -196,14 +189,14 @@
             <div class="pt-10">
                 <h2 class="font-cinzel text-3xl md:text-4xl text-essenza-black tracking-widest mb-6">Nossa História</h2>
                 <div class="w-16 h-[2px] bg-essenza-gold mb-8 mx-auto"></div>
-                <img src="https://images.unsplash.com/photo-1610450948956-b0a688b50e39?q=80&w=1200&auto=format&fit=crop" class="w-full h-80 object-cover mb-10 shadow-lg border-2 border-white">
+                <img src="banner-sobre.png" class="w-full h-80 object-cover mb-10 shadow-lg border-2 border-white">
                 
                 <div class="max-w-3xl mx-auto text-left md:text-center space-y-6">
                     <p class="text-lg leading-relaxed font-light text-essenza-gray">
                         Fundada com o propósito de transformar casas em lares, a Essenza nasceu da paixão pela aromaterapia e pelo design minimalista. Nossas velas são produzidas artesanalmente no sul do Brasil, com matérias-primas rigorosamente selecionadas.
                     </p>
                     <p class="text-lg leading-relaxed font-light text-essenza-gray">
-                        Acreditamos que um aroma tem o poder de resgatar memórias, acalmar a mente e reenergizar o corpo. Cada pote de vidro âmbar derramado à mão carrega nossa dedicação em entregar não apenas um produto, mas uma experiência sensorial completa.
+                        Acreditamos que um aroma tem o poder de resgatar memórias, acalmar a mente e reenergizar o corpo. Cada pote derramado à mão carrega nossa dedicação em entregar não apenas um produto, mas uma experiência sensorial completa.
                     </p>
                     <p class="text-lg leading-relaxed font-light text-essenza-gray font-semibold pt-4">
                         "Acenda sentimentos, crie memórias."
@@ -211,7 +204,6 @@
                 </div>
             </div>
         </section>
-
 
         <!-- ========================================== -->
         <!-- PÁGINA 5: MEUS PEDIDOS                     -->
@@ -226,7 +218,7 @@
         <!-- ========================================== -->
         <!-- FOOTER                                     -->
         <!-- ========================================== -->
-        <footer class="bg-essenza-black text-essenza-beige-light border-t-4 border-essenza-gold">
+        <footer class="bg-essenza-black text-essenza-beige-light border-t-4 border-essenza-gold mt-auto">
             <div class="max-w-7xl mx-auto px-6 py-12 grid grid-cols-1 md:grid-cols-4 gap-12 text-center md:text-left">
                 <div class="md:col-span-2">
                     <h2 class="font-cinzel text-2xl tracking-[0.2em] mb-2">ESSENZA</h2>
@@ -252,14 +244,13 @@
             </div>
             <div class="text-center font-cinzel text-essenza-beige-dark tracking-widest text-[10px] border-t border-essenza-gray/30 py-6">
                 <p>ACENDA SENTIMENTOS, CRIE MEMÓRIAS.</p>
-                <p class="mt-2 text-gray-500 font-montserrat tracking-normal">© 2026 Essenza Velas. Trabalho Acadêmico Front-End.</p>
+                <p class="mt-2 text-gray-500 font-montserrat tracking-normal">© 2026 Essenza Velas. Trabalho Acadêmico.</p>
             </div>
         </footer>
     </div>
 
-
     <!-- ========================================== -->
-    <!-- CARRINHO LATERAL (SIDEBAR) E LÓGICA JS     -->
+    <!-- CARRINHO LATERAL (SIDEBAR)                 -->
     <!-- ========================================== -->
     <div id="cart-sidebar" class="fixed inset-y-0 right-0 w-full md:w-[450px] bg-white shadow-2xl z-[60] flex flex-col cart-closed transition-transform duration-300">
         <div class="p-6 bg-essenza-black text-essenza-beige-light flex justify-between items-center">
@@ -270,9 +261,8 @@
         <div id="cart-items" class="flex-1 overflow-y-auto p-6 space-y-4 bg-gray-50 hide-scrollbar"></div>
 
         <div class="p-6 bg-white border-t border-gray-200">
-            <!-- Cupom -->
             <div class="flex gap-2 mb-6">
-                <input type="text" id="cupom-input" placeholder="Cupom (tente PROMO10)" class="w-full border border-gray-300 px-3 py-2 text-sm uppercase focus:outline-none focus:border-essenza-black">
+                <input type="text" id="cupom-input" placeholder="Cupom (ex: PROMO10)" class="w-full border border-gray-300 px-3 py-2 text-sm uppercase focus:outline-none focus:border-essenza-black">
                 <button onclick="aplicarCupom()" class="bg-essenza-gray text-white px-4 text-xs tracking-wider uppercase hover:bg-black transition-colors">Aplicar</button>
             </div>
             
@@ -281,7 +271,7 @@
                 <span id="cart-subtotal">R$ 0,00</span>
             </div>
             <div class="flex justify-between text-sm text-green-600 mb-4 font-semibold" id="desconto-row" style="display: none;">
-                <span>Desconto Aplicado:</span>
+                <span>Desconto:</span>
                 <span id="cart-desconto">- R$ 0,00</span>
             </div>
             <div class="flex justify-between text-xl font-bold text-essenza-black mb-6 border-t pt-4">
@@ -289,34 +279,59 @@
                 <span id="cart-total">R$ 0,00</span>
             </div>
             
-            <button onclick="finalizarPedido()" class="w-full bg-essenza-gold text-essenza-black py-4 uppercase text-sm font-bold tracking-widest hover:bg-essenza-black hover:text-essenza-gold transition-colors">
-                Finalizar Pedido
+            <button onclick="abrirModalQR()" class="w-full bg-essenza-gold text-essenza-black py-4 uppercase text-sm font-bold tracking-widest hover:bg-essenza-black hover:text-essenza-gold transition-colors">
+                Finalizar Compra
             </button>
         </div>
     </div>
     <div id="cart-overlay" onclick="toggleCart()" class="fixed inset-0 bg-black/50 z-[55] hidden backdrop-blur-sm transition-opacity"></div>
 
-    <!-- TOAST MSG -->
-    <div id="toast" class="fixed bottom-10 right-10 bg-essenza-black text-white p-4 shadow-2xl border-l-4 border-essenza-gold transform translate-y-24 opacity-0 transition-all duration-500 z-[100] rounded-sm">
-        <p class="text-xs font-bold uppercase tracking-wide">Produto Adicionado!</p>
+    <!-- ========================================== -->
+    <!-- MODAL DE CHECKOUT (QR CODE)                -->
+    <!-- ========================================== -->
+    <div id="checkout-modal" class="fixed inset-0 bg-black/80 z-[70] hidden flex items-center justify-center p-4 backdrop-blur-sm">
+        <div class="bg-white p-8 max-w-md w-full text-center rounded-sm border-t-4 border-essenza-gold relative">
+            <button onclick="fecharCheckout()" class="absolute top-4 right-4 text-gray-400 hover:text-black font-bold text-xl">&times;</button>
+            <h2 class="font-cinzel text-2xl text-essenza-black mb-2 mt-2">Pagamento Seguro</h2>
+            <p class="text-sm text-gray-600 mb-6">Aponte a câmera do celular para o QR Code abaixo para simular a conclusão da venda.</p>
+            
+            <div class="flex justify-center mb-6">
+                <!-- Imagem do QR gerada via API -->
+                <img id="qrcode-img" src="" alt="QR Code" class="w-52 h-52 border-4 border-essenza-beige-dark p-2">
+            </div>
+            
+            <p class="font-bold text-2xl mb-2 text-essenza-black" id="modal-total-text">Total: R$ 0,00</p>
+            <p class="text-xs text-gray-400 italic mb-6">O link abrirá a tela final no seu celular.</p>
+
+            <button onclick="registrarPedidoSimulado()" class="text-sm underline text-essenza-gold hover:text-black">
+                Ou clique aqui se estiver no celular
+            </button>
+        </div>
     </div>
 
-    <!-- JAVASCRIPT -->
+    <!-- TOAST MSG -->
+    <div id="toast" class="fixed bottom-10 right-10 bg-essenza-black text-white p-4 shadow-2xl border-l-4 border-essenza-gold transform translate-y-24 opacity-0 transition-all duration-500 z-[100] rounded-sm">
+        <p class="text-xs font-bold uppercase tracking-wide">Adicionado ao carrinho!</p>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- JAVASCRIPT GERAL                           -->
+    <!-- ========================================== -->
     <script>
-        // --- 1. BANCO DE DADOS DE PRODUTOS (Imagens Unsplash curadas e realistas) ---
+        // --- 1. BANCO DE DADOS DE PRODUTOS (Com suas 23 fotos mapeadas) ---
         const produtos = [
-            { id: 1, nome: "Lavanda Francesa", categoria: "Relaxamento", preco: 89.90, desc: "Aroma calmante ideal para o quarto. Promove relaxamento e induz a um sono profundo e reparador.", imgs: ["https://images.unsplash.com/photo-1596433809252-260c27459d1e?q=80&w=800&auto=format&fit=crop", "https://images.unsplash.com/photo-1605816988069-b11383b50717?q=80&w=800&auto=format&fit=crop"] },
-            { id: 2, nome: "Baunilha & Canela", categoria: "Romance", preco: 95.00, desc: "Adoce o ambiente. Um aroma gourmand levemente especiado, perfeito para criar memórias de inverno.", imgs: ["https://images.unsplash.com/photo-1605816988069-b11383b50717?q=80&w=800&auto=format&fit=crop", "https://images.unsplash.com/photo-1608181114410-b18cb3e7e220?q=80&w=800&auto=format&fit=crop"] },
-            { id: 3, nome: "Alecrim Silvestre", categoria: "Energia", preco: 85.00, desc: "Fresco, herbáceo e intensamente revigorante. Excelente para o ambiente de trabalho e aumento de foco.", imgs: ["https://images.unsplash.com/photo-1602928321679-560bb453f190?q=80&w=800&auto=format&fit=crop", "https://images.unsplash.com/photo-1596433809252-260c27459d1e?q=80&w=800&auto=format&fit=crop"] },
-            { id: 4, nome: "Capim Limão", categoria: "Energia", preco: 79.90, desc: "Cítrico e vibrante. Neutraliza odores e renova instantaneamente a energia de salas e cozinhas.", imgs: ["https://images.unsplash.com/photo-1612198273678-83161c28c614?q=80&w=800&auto=format&fit=crop", "https://images.unsplash.com/photo-1589718466187-578d06d862bf?q=80&w=800&auto=format&fit=crop"] },
-            { id: 5, nome: "Rosas Brancas", categoria: "Romance", preco: 110.00, desc: "Floral aveludado e sofisticado. A essência do romance clássico encapsulada em cera vegetal.", imgs: ["https://images.unsplash.com/photo-1572973757827-2c97486e927c?q=80&w=800&auto=format&fit=crop", "https://images.unsplash.com/photo-1595868212720-6d8dbfbd66e7?q=80&w=800&auto=format&fit=crop"] },
-            { id: 6, nome: "Camomila & Mel", categoria: "Relaxamento", preco: 92.00, desc: "Um verdadeiro abraço em forma de aroma. Ajuda a desacelerar a mente após um dia intenso.", imgs: ["https://images.unsplash.com/photo-1589718466187-578d06d862bf?q=80&w=800&auto=format&fit=crop"] },
-            { id: 7, nome: "Brisa do Oceano", categoria: "Energia", preco: 88.00, desc: "Notas aquáticas e frescas que remetem a uma caminhada matinal pela praia.", imgs: ["https://images.unsplash.com/photo-1599598425947-33001c3e390c?q=80&w=800&auto=format&fit=crop"] },
-            { id: 8, nome: "Sândalo Negro", categoria: "Romance", preco: 125.00, desc: "Amadeirado intenso, quente e misterioso. Possui alta fixação e perfumação contínua.", imgs: ["https://images.unsplash.com/photo-1595868212720-6d8dbfbd66e7?q=80&w=800&auto=format&fit=crop"] },
-            { id: 9, nome: "Chá Branco", categoria: "Relaxamento", preco: 98.00, desc: "O cheiro do requinte. Remete a spas e hotéis de luxo, trazendo leveza ao seu espaço.", imgs: ["https://images.unsplash.com/photo-1602928321679-560bb453f190?q=80&w=800&auto=format&fit=crop"] },
-            { id: 10, nome: "Flor de Laranjeira", categoria: "Energia", preco: 82.00, desc: "Alegria engarrafada. Um aroma cítrico floral expansivo, excelente para receber visitas.", imgs: ["https://images.unsplash.com/photo-1612198273678-83161c28c614?q=80&w=800&auto=format&fit=crop"] },
-            { id: 11, nome: "Jasmim da Noite", categoria: "Romance", preco: 105.00, desc: "Sensual e muito marcante. Desperta sentimentos profundos e decora com elegância.", imgs: ["https://images.unsplash.com/photo-1608181114410-b18cb3e7e220?q=80&w=800&auto=format&fit=crop"] },
-            { id: 12, nome: "Eucalipto SPA", categoria: "Relaxamento", preco: 89.00, desc: "Desobstrui a mente e a respiração. Transforme o seu momento de banho em um autêntico SPA.", imgs: ["https://images.unsplash.com/photo-1596433809252-260c27459d1e?q=80&w=800&auto=format&fit=crop"] }
+            { id: 1, nome: "Lavanda Francesa", categoria: "Relaxamento", preco: 89.90, desc: "Aroma calmante ideal para o quarto. Promove relaxamento e induz a um sono profundo e reparador.", imgs: ["1.jpg", "2.jpg"] },
+            { id: 2, nome: "Baunilha & Canela", categoria: "Romance", preco: 95.00, desc: "Adoce o ambiente. Um aroma gourmand levemente especiado, perfeito para criar memórias de inverno.", imgs: ["3.jpg", "4.jpg"] },
+            { id: 3, nome: "Alecrim Silvestre", categoria: "Energia", preco: 85.00, desc: "Fresco, herbáceo e intensamente revigorante. Excelente para o ambiente de trabalho e aumento de foco.", imgs: ["5.jpg", "6.jpg"] },
+            { id: 4, nome: "Capim Limão", categoria: "Energia", preco: 79.90, desc: "Cítrico e vibrante. Neutraliza odores e renova instantaneamente a energia de salas e cozinhas.", imgs: ["7.jpg", "8.jpg"] },
+            { id: 5, nome: "Rosas Brancas", categoria: "Romance", preco: 110.00, desc: "Floral aveludado e sofisticado. A essência do romance clássico encapsulada em cera vegetal.", imgs: ["9.jpg", "10.jpg"] },
+            { id: 6, nome: "Camomila & Mel", categoria: "Relaxamento", preco: 92.00, desc: "Um verdadeiro abraço em forma de aroma. Ajuda a desacelerar a mente após um dia intenso.", imgs: ["11.jpg", "12.jpg"] },
+            { id: 7, nome: "Brisa do Oceano", categoria: "Energia", preco: 88.00, desc: "Notas aquáticas e frescas que remetem a uma caminhada matinal pela praia.", imgs: ["13.jpg", "14.jpg"] },
+            { id: 8, nome: "Sândalo Negro", categoria: "Romance", preco: 125.00, desc: "Amadeirado intenso, quente e misterioso. Possui alta fixação e perfumação contínua.", imgs: ["15.jpg", "16.jpg"] },
+            { id: 9, nome: "Chá Branco", categoria: "Relaxamento", preco: 98.00, desc: "O cheiro do requinte. Remete a spas e hotéis de luxo, trazendo leveza ao seu espaço.", imgs: ["17.jpg", "18.jpg"] },
+            { id: 10, nome: "Flor de Laranjeira", categoria: "Energia", preco: 82.00, desc: "Alegria engarrafada. Um aroma cítrico floral expansivo, excelente para receber visitas.", imgs: ["19.jpg", "20.jpg"] },
+            { id: 11, nome: "Jasmim da Noite", categoria: "Romance", preco: 105.00, desc: "Sensual e muito marcante. Desperta sentimentos profundos e decora com elegância.", imgs: ["21.jpg", "22.jpg"] },
+            { id: 12, nome: "Eucalipto SPA", categoria: "Relaxamento", preco: 89.00, desc: "Desobstrui a mente e a respiração. Transforme o seu momento de banho em um autêntico SPA.", imgs: ["23.jpg", "21.jpg"] } // Usa a 23 e repete a 21
         ];
 
         // --- 2. SISTEMA DE ROTAS SPA ---
@@ -338,8 +353,7 @@
         // --- 3. INJETAR "MAIS VENDIDOS" NA HOME ---
         function injetarMaisVendidosHome() {
             const vitrine = document.getElementById('vitrine-home');
-            // Pega 3 produtos (id 1, 8 e 3)
-            const destaques = [produtos[0], produtos[7], produtos[2]]; 
+            const destaques = [produtos[0], produtos[7], produtos[2]]; // IDs 1, 8 e 3
             
             vitrine.innerHTML = destaques.map(prod => `
                 <div class="bg-white rounded border border-gray-100 shadow-sm hover:shadow-xl transition-all group flex flex-col cursor-pointer h-full relative" onclick="window.location.hash='#produto=${prod.id}'">
@@ -394,12 +408,9 @@
             });
             renderizarCatalogo(document.getElementById('searchInput').value);
         }
+        function filtrarProdutos() { renderizarCatalogo(document.getElementById('searchInput').value); }
 
-        function filtrarProdutos() {
-            renderizarCatalogo(document.getElementById('searchInput').value);
-        }
-
-        // --- 5. DETALHE DO PRODUTO (Página Individual) ---
+        // --- 5. DETALHE DO PRODUTO ---
         function renderizarDetalhe(id) {
             const prod = produtos.find(p => p.id === id);
             if(!prod) return;
@@ -428,9 +439,8 @@
                     </div>
                     
                     <div class="mt-8 border-t pt-6 text-xs text-gray-500 space-y-3">
-                        <p class="flex items-center gap-2"><span class="text-lg">🌿</span> Cera 100% vegetal (Coco, Arroz e Palma)</p>
-                        <p class="flex items-center gap-2"><span class="text-lg">🔥</span> Pavio de algodão (Queima limpa)</p>
-                        <p class="flex items-center gap-2"><span class="text-lg">📦</span> Embalagem reciclável de vidro âmbar</p>
+                        <p class="flex items-center gap-2"><span class="text-lg">🌿</span> Cera 100% vegetal</p>
+                        <p class="flex items-center gap-2"><span class="text-lg">🔥</span> Pavio de algodão puro</p>
                     </div>
                 </div>
             `;
@@ -446,13 +456,14 @@
         function adicionarDoDetalhe(id) {
             const prod = produtos.find(p => p.id === id);
             addToCart(prod, qtdTemp);
-            qtdTemp = 1; // Reseta
+            qtdTemp = 1;
         }
 
 
-        // --- 6. LÓGICA DO CARRINHO, QUANTIDADE E CUPOM ---
+        // --- 6. CARRINHO E CUPOM ---
         let cart = JSON.parse(localStorage.getItem('essenzaCart')) || [];
         let descontoAtivo = 0;
+        let totalGlobal = 0; // Para uso no checkout
 
         function addToCart(produto, qtd = 1) {
             const itemExistente = cart.find(item => item.id === produto.id);
@@ -460,7 +471,6 @@
             else cart.push({ ...produto, qtd: qtd });
             salvarCart();
             
-            // Abre carrinho mobile/desktop e exibe Toast
             if(!isCartOpen) toggleCart();
             const toast = document.getElementById('toast');
             toast.classList.remove('translate-y-24', 'opacity-0');
@@ -482,10 +492,10 @@
             const codigo = document.getElementById('cupom-input').value.toUpperCase();
             if(codigo === 'PROMO10') {
                 descontoAtivo = 0.10;
-                alert('Cupom de 10% aplicado com sucesso!');
+                alert('Cupom aplicado!');
             } else {
                 descontoAtivo = 0;
-                alert('Cupom inválido. Tente PROMO10');
+                alert('Cupom inválido.');
             }
             updateCartUI();
         }
@@ -499,6 +509,7 @@
                 document.getElementById('cart-subtotal').innerText = 'R$ 0,00';
                 document.getElementById('cart-total').innerText = 'R$ 0,00';
                 document.getElementById('desconto-row').style.display = 'none';
+                totalGlobal = 0;
                 return;
             }
 
@@ -526,14 +537,14 @@
             }).join('');
 
             const valorDesconto = subtotal * descontoAtivo;
-            const totalFinal = subtotal - valorDesconto;
+            totalGlobal = subtotal - valorDesconto; // Salva na global para o Checkout
 
             document.getElementById('cart-subtotal').innerText = `R$ ${subtotal.toFixed(2).replace('.', ',')}`;
             if(descontoAtivo > 0) {
                 document.getElementById('desconto-row').style.display = 'flex';
                 document.getElementById('cart-desconto').innerText = `- R$ ${valorDesconto.toFixed(2).replace('.', ',')}`;
             }
-            document.getElementById('cart-total').innerText = `R$ ${totalFinal.toFixed(2).replace('.', ',')}`;
+            document.getElementById('cart-total').innerText = `R$ ${totalGlobal.toFixed(2).replace('.', ',')}`;
         }
 
         let isCartOpen = false;
@@ -553,7 +564,33 @@
             }
         }
 
-        // --- 7. HISTÓRICO DE PEDIDOS E CHECKOUT ---
+
+        // --- 7. CHECKOUT / QR CODE / PEDIDOS ---
+        
+        function abrirModalQR() {
+            if (cart.length === 0) {
+                alert("Seu carrinho está vazio!");
+                return;
+            }
+
+            const totalFormatado = totalGlobal.toFixed(2);
+            document.getElementById('modal-total-text').innerText = `R$ ${totalFormatado.replace('.', ',')}`;
+            
+            // URL EXATA do seu repositório no GitHub Pages
+            const urlPagamento = `https://andryocuba-97.github.io/essenza/pagamento.html?valor=${totalFormatado}`;
+            
+            // Gerar imagem do QR Code
+            const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(urlPagamento)}`;
+            document.getElementById('qrcode-img').src = qrUrl;
+
+            document.getElementById('checkout-modal').classList.remove('hidden');
+            toggleCart(); // Fecha a sidebar
+        }
+
+        function fecharCheckout() {
+            document.getElementById('checkout-modal').classList.add('hidden');
+        }
+
         let pedidos = JSON.parse(localStorage.getItem('essenzaPedidos')) || [];
 
         function renderizarPedidos() {
@@ -578,16 +615,15 @@
             `).join('');
         }
 
-        function finalizarPedido() {
-            if(cart.length === 0) return alert('Seu carrinho está vazio.');
-            
-            const totalFinal = document.getElementById('cart-total').innerText.replace('R$ ', '');
+        // Esta função é chamada se o professor clicar no link dentro do modal (caso esteja testando pelo PC e não use o celular)
+        function registrarPedidoSimulado() {
+            const totalFormatado = totalGlobal.toFixed(2).replace('.', ',');
             
             const novoPedido = {
                 id: Math.floor(Math.random() * 1000000),
                 data: new Date().toLocaleDateString('pt-BR') + ' às ' + new Date().toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'}),
                 itens: [...cart],
-                total: totalFinal
+                total: totalFormatado
             };
             pedidos.push(novoPedido);
             localStorage.setItem('essenzaPedidos', JSON.stringify(pedidos));
@@ -597,8 +633,8 @@
             salvarCart();
             document.getElementById('cupom-input').value = '';
             
-            alert('Compra simulada com sucesso! Seu pedido foi registrado no sistema.');
-            toggleCart();
+            alert('Compra simulada com sucesso! Seu pedido foi registrado.');
+            fecharCheckout();
             window.location.hash = '#pedidos';
             renderizarPedidos();
         }
