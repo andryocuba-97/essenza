@@ -259,14 +259,24 @@
         let pedidos = JSON.parse(localStorage.getItem('essenzaPedidos')) || [];
         let totalGlobal = 0;
 
-        async function inicializarLoja() {
+       async function inicializarLoja() {
             try {
                 const res = await fetch(API_URL);
                 const nuvem = await res.json();
-                produtos = [...produtosPadrao, ...nuvem];
+                
+                // Se a nuvem retornar dados, nós mesclamos, 
+                // mas garantimos que se a nuvem estiver vazia, usamos o padrão.
+                if (nuvem && nuvem.length > 0) {
+                    produtos = [...produtosPadrao, ...nuvem];
+                } else {
+                    produtos = [...produtosPadrao];
+                }
             } catch(e) {
-                console.log("Modo offline, usando padrão.");
+                console.log("Erro na API, carregando produtos padrão.");
+                produtos = [...produtosPadrao];
             }
+            
+            // Agora garantimos que o catálogo seja renderizado com o que temos
             gerarFiltrosCategorias();
             injetarMaisVendidosHome();
             renderizarCatalogo();
