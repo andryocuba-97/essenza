@@ -22,12 +22,28 @@
         <p class="text-essenza-gold text-[10px] tracking-widest uppercase">Checkout Seguro</p>
     </div>
 
+    <!-- TELA DE CARREGAMENTO -->
+    <div id="tela-carregando" class="flex-1 flex flex-col items-center justify-center p-6">
+        <div class="spinner border-4 border-gray-200 border-t-essenza-gold rounded-full w-10 h-10 animate-spin mb-4"></div>
+        <p class="text-sm text-gray-500">Carregando seu pedido...</p>
+    </div>
+
+    <!-- TELA DE ERRO -->
+    <div id="tela-erro" class="hidden flex-1 flex-col items-center justify-center p-6 text-center">
+        <p class="text-red-500 font-semibold mb-2">Não foi possível encontrar este pedido.</p>
+        <p class="text-sm text-gray-500 mb-6">Verifique se o link/QR Code está correto ou tente novamente.</p>
+        <a href="index.html" class="text-sm text-essenza-gold underline font-semibold">Voltar para a loja</a>
+    </div>
+
     <!-- TELA DE REVISÃO E BOTÃO PAGAR -->
-    <div id="tela-pagamento" class="flex-1 flex flex-col items-center justify-center p-6 transition-opacity duration-500">
+    <div id="tela-pagamento" class="hidden flex-1 flex-col items-center justify-center p-6 transition-opacity duration-500">
         <div class="bg-white p-8 rounded-xl shadow-lg w-full max-w-sm text-center border-t-4 border-essenza-gold">
+            <p class="text-gray-500 text-sm mb-1">Pedido #<span id="pedido-id-display"></span></p>
             <p class="text-gray-500 text-sm mb-2">Total a pagar:</p>
-            <h2 id="valor-display" class="text-4xl font-bold text-essenza-black mb-8">R$ 0,00</h2>
-            
+            <h2 id="valor-display" class="text-4xl font-bold text-essenza-black mb-6">R$ 0,00</h2>
+
+            <div id="itens-display" class="text-left text-xs text-gray-500 space-y-1 mb-6 border-y border-gray-100 py-4"></div>
+
             <div class="flex items-center justify-center gap-3 mb-8 bg-gray-100 p-4 rounded-lg">
                 <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                 <p class="text-xs font-semibold text-gray-700 uppercase">Conexão Criptografada</p>
@@ -41,27 +57,73 @@
     </div>
 
     <!-- TELA DE SUCESSO -->
-    <div id="tela-sucesso" class="hidden flex-1 flex-col items-center justify-center p-6 bg-green-50 animate-pulse">
+    <div id="tela-sucesso" class="hidden flex-1 flex-col items-center justify-center p-6 bg-green-50">
         <div class="w-24 h-24 bg-green-500 rounded-full flex items-center justify-center mb-6 shadow-xl">
             <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
         </div>
         <h2 class="text-2xl font-bold text-green-800 mb-2">Pagamento Aprovado!</h2>
         <p class="text-center text-gray-600">Seu pedido já está sendo preparado com muito carinho.</p>
         
-        <a href="index.html" class="mt-8 text-sm text-essenza-gold underline font-semibold">Voltar para a loja</a>
+        <a href="index.html#pedidos" class="mt-8 text-sm text-essenza-gold underline font-semibold">Ver meus pedidos</a>
     </div>
 
     <script>
-        // Pega o valor passado na URL pelo QR Code
-        window.onload = function() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const valor = urlParams.get('valor');
-            if(valor) {
-                document.getElementById('valor-display').innerText = 'R$ ' + valor.replace('.', ',');
-            }
-        };
+        const PEDIDOS_API_URL = 'https://6a8370cfcb486d243403b23a.mockapi.io/pedidos';
+        let pedidoAtual = null;
 
-        // Simula o processamento do banco (loading) e exibe sucesso
+        function mostrarTela(id) {
+            ['tela-carregando', 'tela-erro', 'tela-pagamento', 'tela-sucesso'].forEach(t => {
+                const el = document.getElementById(t);
+                el.classList.add('hidden');
+                el.style.display = '';
+            });
+            const alvo = document.getElementById(id);
+            alvo.classList.remove('hidden');
+            if (id !== 'tela-carregando' && id !== 'tela-erro') alvo.style.display = 'flex';
+        }
+
+        async function carregarPedido() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const pedidoId = urlParams.get('pedido');
+
+            // Compatibilidade com links antigos que só passavam "valor" na URL
+            const valorLegado = urlParams.get('valor');
+
+            if (!pedidoId) {
+                if (valorLegado) {
+                    document.getElementById('pedido-id-display').innerText = '—';
+                    document.getElementById('valor-display').innerText = 'R$ ' + valorLegado.replace('.', ',');
+                    document.getElementById('itens-display').innerHTML = '<p class="italic text-center">Link antigo — sem detalhes de itens.</p>';
+                    mostrarTela('tela-pagamento');
+                    return;
+                }
+                mostrarTela('tela-erro');
+                return;
+            }
+
+            try {
+                const res = await fetch(`${PEDIDOS_API_URL}/${pedidoId}`);
+                if (!res.ok) throw new Error(`Erro HTTP ${res.status}`);
+                pedidoAtual = await res.json();
+
+                document.getElementById('pedido-id-display').innerText = pedidoAtual.id;
+                document.getElementById('valor-display').innerText = 'R$ ' + String(pedidoAtual.total).replace('.', ',');
+                document.getElementById('itens-display').innerHTML = (pedidoAtual.itens || []).map(item =>
+                    `<div class="flex justify-between"><span>${item.qtd}x ${item.nome}</span><span>R$ ${(item.preco * item.qtd).toFixed(2).replace('.', ',')}</span></div>`
+                ).join('');
+
+                if (pedidoAtual.status === 'aprovado') {
+                    mostrarTela('tela-sucesso');
+                } else {
+                    mostrarTela('tela-pagamento');
+                }
+            } catch (err) {
+                console.error('Essenza: não foi possível carregar o pedido.', err);
+                mostrarTela('tela-erro');
+            }
+        }
+
+        // Confirma o pagamento: atualiza o status do pedido na nuvem para "aprovado"
         function simularPagamento() {
             const btnText = document.getElementById('btn-text');
             const spinner = document.getElementById('loading-spinner');
@@ -70,12 +132,23 @@
             spinner.classList.remove('hidden');
 
             // Aguarda 2 segundos para dar o sentimento de processamento real
-            setTimeout(() => {
-                document.getElementById('tela-pagamento').classList.add('hidden');
-                document.getElementById('tela-sucesso').classList.remove('hidden');
-                document.getElementById('tela-sucesso').style.display = 'flex';
+            setTimeout(async () => {
+                if (pedidoAtual && pedidoAtual.id) {
+                    try {
+                        await fetch(`${PEDIDOS_API_URL}/${pedidoAtual.id}`, {
+                            method: 'PUT',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ status: 'aprovado' })
+                        });
+                    } catch (err) {
+                        console.warn('Essenza: não foi possível marcar o pedido como aprovado na nuvem.', err);
+                    }
+                }
+                mostrarTela('tela-sucesso');
             }, 2000);
         }
+
+        carregarPedido();
     </script>
 </body>
 </html>
