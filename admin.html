@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Essenza - Velas Aromáticas Premium</title>
-    
+    <title>Painel do Gestor - Essenza</title>
+
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -23,12 +23,14 @@
     </script>
     <style>
         html { scroll-behavior: smooth; }
-        .page-section { display: none; animation: fadeIn 0.5s; }
+        .page-section { display: none; animation: fadeIn 0.4s; }
         .page-section.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .cart-open { transform: translateX(0%); }
-        .cart-closed { transform: translateX(100%); }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        .nav-link.active-tab { color: #CBA25B; }
+        .nav-link.active-tab::after { content: ''; display: block; height: 2px; background: #CBA25B; margin-top: 4px; }
         .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .spinner { border: 2px solid #E7D9C2; border-top-color: #CBA25B; border-radius: 50%; width: 18px; height: 18px; animation: spin 0.7s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
     </style>
 </head>
 <body class="font-montserrat bg-essenza-beige-light text-essenza-gray antialiased">
@@ -36,694 +38,447 @@
     <!-- NAVBAR -->
     <nav class="fixed w-full z-40 bg-essenza-black/95 backdrop-blur-sm border-b border-essenza-gold/30">
         <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-            <a href="#home" class="font-cinzel text-2xl text-essenza-beige-light tracking-widest hover:text-essenza-gold transition-colors">ESSENZA</a>
-            
-            <div class="hidden md:flex space-x-8 text-xs tracking-widest uppercase font-semibold text-essenza-beige-light">
-                <a href="#home" class="hover:text-essenza-gold transition-colors">Início</a>
-                <a href="#catalogo" class="hover:text-essenza-gold transition-colors">Catálogo</a>
-                <a href="#sobre" class="hover:text-essenza-gold transition-colors">Sobre Nós</a>
-                <a href="#pedidos" class="hover:text-essenza-gold transition-colors">Meus Pedidos</a>
+            <div class="flex items-center gap-3">
+                <a href="#dashboard" class="font-cinzel text-2xl text-essenza-beige-light tracking-widest hover:text-essenza-gold transition-colors">ESSENZA</a>
+                <span class="hidden sm:inline-block text-[10px] uppercase tracking-widest text-essenza-gold border border-essenza-gold/50 px-2 py-1 rounded-full">Painel do Gestor</span>
             </div>
 
-            <button onclick="toggleCart()" class="relative text-essenza-beige-light hover:text-essenza-gold transition-colors flex items-center">
-                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" /></svg>
-                <span id="cart-count" class="absolute -top-2 -right-2 bg-essenza-gold text-essenza-black text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">0</span>
-            </button>
+            <div class="hidden md:flex space-x-8 text-xs tracking-widest uppercase font-semibold text-essenza-beige-light">
+                <a href="#dashboard" class="nav-link hover:text-essenza-gold transition-colors" data-tab="dashboard">Dashboard</a>
+                <a href="#produtos" class="nav-link hover:text-essenza-gold transition-colors" data-tab="produtos">Produtos</a>
+                <a href="#pedidos" class="nav-link hover:text-essenza-gold transition-colors" data-tab="pedidos">Pedidos</a>
+            </div>
+
+            <a href="index.html" class="text-essenza-beige-light hover:text-essenza-gold transition-colors text-xs uppercase tracking-widest font-semibold flex items-center gap-2">
+                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+                <span class="hidden sm:inline">Ver Loja</span>
+            </a>
+        </div>
+        <!-- NAV MOBILE -->
+        <div class="md:hidden flex justify-center gap-6 text-[10px] tracking-widest uppercase font-semibold text-essenza-beige-light bg-essenza-black/95 pb-3">
+            <a href="#dashboard" class="nav-link hover:text-essenza-gold transition-colors" data-tab="dashboard">Dashboard</a>
+            <a href="#produtos" class="nav-link hover:text-essenza-gold transition-colors" data-tab="produtos">Produtos</a>
+            <a href="#pedidos" class="nav-link hover:text-essenza-gold transition-colors" data-tab="pedidos">Pedidos</a>
         </div>
     </nav>
 
-    <!-- CONTAINER DAS PÁGINAS -->
-    <div class="pt-20 min-h-screen flex flex-col">
+    <div class="pt-32 md:pt-24 min-h-screen flex flex-col max-w-7xl mx-auto w-full px-6 pb-24">
 
         <!-- ========================================== -->
-        <!-- PÁGINA 1: INÍCIO (HOME)                    -->
+        <!-- DASHBOARD                                   -->
         <!-- ========================================== -->
-        <section id="home" class="page-section active flex-1">
-            
-            <!-- HERO COM SEU BANNER -->
-            <div class="relative bg-essenza-black h-[85vh] flex flex-col items-center justify-center overflow-hidden">
-                <div class="absolute inset-0 z-0 opacity-50">
-                    <img src="banner-home.png" class="w-full h-full object-cover">
+        <section id="dashboard" class="page-section active">
+            <div class="mb-10">
+                <h1 class="font-cinzel text-3xl text-essenza-black tracking-widest mb-2">Visão Geral</h1>
+                <p class="text-sm text-essenza-gray font-light">Resumo da loja Essenza em tempo real.</p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-14">
+                <div class="bg-white border border-gray-100 shadow-sm rounded p-6">
+                    <p class="text-[10px] uppercase tracking-widest text-essenza-gray font-bold mb-3">Faturamento (simulado)</p>
+                    <p id="kpi-faturamento" class="font-cinzel text-2xl text-essenza-black">R$ 0,00</p>
                 </div>
-                <div class="z-10 text-center px-4 mt-10">
-                    <h1 class="font-cinzel text-5xl md:text-7xl text-essenza-beige-light tracking-[0.25em] mb-4">ESSENZA</h1>
-                    <div class="flex items-center justify-center space-x-4 mb-8">
-                        <div class="h-[1px] w-12 bg-essenza-gold"></div>
-                        <p class="font-montserrat text-essenza-gold tracking-[0.3em] uppercase text-xs md:text-sm">Acenda sentimentos</p>
-                        <div class="h-[1px] w-12 bg-essenza-gold"></div>
-                    </div>
-                    <p class="text-essenza-beige-light font-light max-w-xl mx-auto mb-10 text-sm md:text-base opacity-90 shadow-black drop-shadow-md">Transforme o seu ambiente num santuário de paz e aconchego com nossas velas artesanais de cera 100% vegetal.</p>
-                    <a href="#catalogo" class="inline-block bg-essenza-gold text-essenza-black px-10 py-4 uppercase text-xs font-bold tracking-widest hover:bg-white transition-colors">Conheça a Coleção</a>
+                <div class="bg-white border border-gray-100 shadow-sm rounded p-6">
+                    <p class="text-[10px] uppercase tracking-widest text-essenza-gray font-bold mb-3">Pedidos Concluídos</p>
+                    <p id="kpi-pedidos" class="font-cinzel text-2xl text-essenza-black">0</p>
+                </div>
+                <div class="bg-white border border-gray-100 shadow-sm rounded p-6">
+                    <p class="text-[10px] uppercase tracking-widest text-essenza-gray font-bold mb-3">Produtos no Catálogo</p>
+                    <p id="kpi-produtos" class="font-cinzel text-2xl text-essenza-black">12</p>
+                </div>
+                <div class="bg-white border border-gray-100 shadow-sm rounded p-6">
+                    <p class="text-[10px] uppercase tracking-widest text-essenza-gray font-bold mb-3">Ticket Médio</p>
+                    <p id="kpi-ticket" class="font-cinzel text-2xl text-essenza-black">R$ 0,00</p>
                 </div>
             </div>
 
-            <!-- DIFERENCIAIS DA MARCA -->
-            <div class="bg-essenza-beige-dark py-16 px-6 border-b border-[#d5c5ad]">
-                <div class="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-                    <div class="flex flex-col items-center">
-                        <span class="text-3xl mb-3">🥥</span>
-                        <h4 class="font-bold text-xs uppercase tracking-widest text-essenza-black mb-1">Cera Vegana</h4>
-                        <p class="text-[10px] text-essenza-gray">Blend de coco, arroz e palma.</p>
-                    </div>
-                    <div class="flex flex-col items-center">
-                        <span class="text-3xl mb-3">🔥</span>
-                        <h4 class="font-bold text-xs uppercase tracking-widest text-essenza-black mb-1">Queima Limpa</h4>
-                        <p class="text-[10px] text-essenza-gray">Pavios de algodão sem chumbo.</p>
-                    </div>
-                    <div class="flex flex-col items-center">
-                        <span class="text-3xl mb-3">🧪</span>
-                        <h4 class="font-bold text-xs uppercase tracking-widest text-essenza-black mb-1">Zero Ftalatos</h4>
-                        <p class="text-[10px] text-essenza-gray">Essências premium seguras.</p>
-                    </div>
-                    <div class="flex flex-col items-center">
-                        <span class="text-3xl mb-3">🤲</span>
-                        <h4 class="font-bold text-xs uppercase tracking-widest text-essenza-black mb-1">Artesanal</h4>
-                        <p class="text-[10px] text-essenza-gray">Derramadas à mão com amor.</p>
-                    </div>
+            <div class="bg-white border border-gray-100 shadow-sm rounded p-6 md:p-8">
+                <div class="flex justify-between items-center mb-6 border-b border-essenza-beige-dark pb-4">
+                    <h2 class="font-cinzel text-lg text-essenza-black tracking-widest">Últimos Pedidos</h2>
+                    <a href="#pedidos" class="text-[10px] uppercase tracking-widest font-bold text-essenza-gold hover:text-essenza-black transition-colors">Ver todos &rarr;</a>
                 </div>
+                <div id="dashboard-ultimos-pedidos" class="space-y-3"></div>
             </div>
 
-            <!-- MAIS VENDIDOS NA HOME -->
-            <div class="py-24 px-6 max-w-7xl mx-auto">
-                <div class="flex justify-between items-end mb-12 border-b border-essenza-gold pb-4">
-                    <div>
-                        <h2 class="font-cinzel text-3xl text-essenza-black tracking-widest mb-2">Favoritos Essenza</h2>
-                        <p class="font-light text-sm text-essenza-gray">As fragrâncias mais amadas pelos nossos clientes.</p>
-                    </div>
-                    <a href="#catalogo" class="hidden md:block text-xs uppercase tracking-widest font-bold text-essenza-gold hover:text-essenza-black transition-colors">Ver todos &rarr;</a>
-                </div>
-                
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8" id="vitrine-home">
-                    <!-- Gerado via JS -->
-                </div>
-            </div>
-
-            <!-- SOBRE O PROCESSO / BANNER ARTE -->
-            <div class="bg-essenza-black text-essenza-beige-light">
-                <div class="grid grid-cols-1 md:grid-cols-2">
-                    <div class="h-96 md:h-auto overflow-hidden">
-                        <img src="banner-arte.png" class="w-full h-full object-cover opacity-80 hover:scale-105 transition-transform duration-1000">
-                    </div>
-                    <div class="flex flex-col justify-center p-12 md:p-20 text-center md:text-left">
-                        <p class="text-essenza-gold text-xs uppercase tracking-[0.3em] font-bold mb-4">Arte & Dedicação</p>
-                        <h2 class="font-cinzel text-3xl md:text-4xl tracking-widest mb-6">A Arte da Velaria</h2>
-                        <p class="font-light text-sm leading-relaxed text-essenza-beige-dark mb-8">
-                            Acreditamos que o luxo mora nos detalhes. Cada vela Essenza passa por um rigoroso processo de cura de 7 dias para garantir que a fragrância se integre perfeitamente à cera vegetal. O resultado? Um aroma intenso que perfuma o seu ambiente até mesmo com a vela apagada.
-                        </p>
-                        <div>
-                            <a href="#sobre" class="border border-essenza-gold text-essenza-gold px-8 py-3 text-xs uppercase tracking-widest hover:bg-essenza-gold hover:text-essenza-black transition-colors">Nossa História</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- NEWSLETTER -->
-            <div class="bg-essenza-beige-dark py-20 px-6 text-center">
-                <h2 class="font-cinzel text-3xl text-essenza-black tracking-widest mb-4">Clube Essenza</h2>
-                <p class="font-light text-essenza-gray max-w-lg mx-auto mb-8 text-sm">Inscreva-se em nossa newsletter e ganhe <strong class="text-essenza-black">10% OFF</strong> na sua primeira compra com o cupom <span class="bg-essenza-black text-essenza-gold px-2 py-1 font-bold">PROMO10</span>.</p>
-                <form class="flex justify-center max-w-md mx-auto" onsubmit="event.preventDefault(); alert('E-mail cadastrado com sucesso!'); this.reset();">
-                    <input type="email" placeholder="Digite seu melhor e-mail" required class="flex-1 bg-white border border-gray-300 py-3 px-4 text-sm focus:outline-none focus:border-essenza-gold">
-                    <button type="submit" class="bg-essenza-black text-essenza-beige-light px-6 py-3 text-xs uppercase font-bold tracking-widest hover:bg-essenza-gold hover:text-essenza-black transition-colors">Assinar</button>
-                </form>
-            </div>
+            <p class="text-[11px] text-gray-400 mt-6 italic">
+                * Os pedidos exibidos aqui são os registrados neste navegador ao simular uma compra na loja — útil para demonstrar o fluxo completo (cliente compra → gestor acompanha) durante a apresentação.
+            </p>
         </section>
 
         <!-- ========================================== -->
-        <!-- PÁGINA 2: CATÁLOGO COMPLETO                -->
+        <!-- PRODUTOS                                    -->
         <!-- ========================================== -->
-        <section id="catalogo" class="page-section flex-1 py-20 px-6 max-w-7xl mx-auto w-full">
-            <div class="text-center mb-12 pt-10">
-                <h2 class="font-cinzel text-3xl md:text-4xl text-essenza-black tracking-widest mb-4">Nosso Catálogo</h2>
-                <p class="font-light text-essenza-gray">Encontre a essência perfeita para o seu momento.</p>
-            </div>
-            
-            <div class="flex flex-col md:flex-row justify-between items-center mb-10 gap-4">
-                <input type="text" id="searchInput" onkeyup="filtrarProdutos()" placeholder="Buscar aroma..." class="w-full md:w-1/3 bg-white border border-gray-300 py-3 px-4 text-sm focus:outline-none focus:border-essenza-gold">
-                <div class="flex gap-2 overflow-x-auto w-full md:w-auto hide-scrollbar pb-2">
-                    <button onclick="filtrarCategoria('Todas')" class="filter-btn active bg-essenza-black text-white px-4 py-2 text-xs uppercase tracking-wider whitespace-nowrap">Todas</button>
-                    <button onclick="filtrarCategoria('Relaxamento')" class="filter-btn bg-white border border-gray-300 text-essenza-gray px-4 py-2 text-xs uppercase tracking-wider whitespace-nowrap">Relaxamento</button>
-                    <button onclick="filtrarCategoria('Energia')" class="filter-btn bg-white border border-gray-300 text-essenza-gray px-4 py-2 text-xs uppercase tracking-wider whitespace-nowrap">Energia</button>
-                    <button onclick="filtrarCategoria('Romance')" class="filter-btn bg-white border border-gray-300 text-essenza-gray px-4 py-2 text-xs uppercase tracking-wider whitespace-nowrap">Romance</button>
+        <section id="produtos" class="page-section">
+            <div class="flex flex-col md:flex-row justify-between md:items-end gap-4 mb-10">
+                <div>
+                    <h1 class="font-cinzel text-3xl text-essenza-black tracking-widest mb-2">Produtos</h1>
+                    <p class="text-sm text-essenza-gray font-light max-w-xl">Os 12 produtos de lançamento são fixos no código da loja. Aqui você cadastra, edita e remove os produtos adicionais, sincronizados em nuvem via API.</p>
                 </div>
-            </div>
-
-            <div id="grid-produtos" class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8"></div>
-        </section>
-
-        <!-- ========================================== -->
-        <!-- PÁGINA 3: DETALHES DO PRODUTO              -->
-        <!-- ========================================== -->
-        <section id="produto-detalhe" class="page-section flex-1 py-20 px-6 max-w-6xl mx-auto w-full">
-            <div class="pt-10">
-                <button onclick="window.location.hash = '#catalogo'" class="text-xs uppercase tracking-widest text-essenza-gray hover:text-essenza-gold mb-8 flex items-center gap-2">
-                    &larr; Voltar ao Catálogo
+                <button onclick="abrirModalProduto()" class="bg-essenza-black text-essenza-gold px-6 py-3 uppercase text-xs font-bold tracking-widest hover:bg-essenza-gold hover:text-essenza-black transition-colors whitespace-nowrap self-start md:self-auto">
+                    + Novo Produto
                 </button>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-12" id="detalhe-container"></div>
             </div>
+
+            <div id="produtos-status" class="flex items-center gap-3 text-xs text-essenza-gray mb-6">
+                <div class="spinner"></div> Carregando produtos da nuvem...
+            </div>
+
+            <div id="grid-produtos-admin" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
         </section>
 
         <!-- ========================================== -->
-        <!-- PÁGINA 4: SOBRE NÓS                        -->
+        <!-- PEDIDOS                                     -->
         <!-- ========================================== -->
-        <section id="sobre" class="page-section flex-1 py-20 px-6 max-w-5xl mx-auto w-full text-center">
-            <div class="pt-10">
-                <h2 class="font-cinzel text-3xl md:text-4xl text-essenza-black tracking-widest mb-6">Nossa História</h2>
-                <div class="w-16 h-[2px] bg-essenza-gold mb-8 mx-auto"></div>
-                <img src="banner-sobre.png" class="w-full h-80 object-cover mb-10 shadow-lg border-2 border-white">
-                
-                <div class="max-w-3xl mx-auto text-left md:text-center space-y-6">
-                    <p class="text-lg leading-relaxed font-light text-essenza-gray">
-                        Fundada com o propósito de transformar casas em lares, a Essenza nasceu da paixão pela aromaterapia e pelo design minimalista. Nossas velas são produzidas artesanalmente no sul do Brasil, com matérias-primas rigorosamente selecionadas.
-                    </p>
-                    <p class="text-lg leading-relaxed font-light text-essenza-gray">
-                        Acreditamos que um aroma tem o poder de resgatar memórias, acalmar a mente e reenergizar o corpo. Cada pote derramado à mão carrega nossa dedicação em entregar não apenas um produto, mas uma experiência sensorial completa.
-                    </p>
-                    <p class="text-lg leading-relaxed font-light text-essenza-gray font-semibold pt-4">
-                        "Acenda sentimentos, crie memórias."
-                    </p>
-                </div>
+        <section id="pedidos" class="page-section">
+            <div class="mb-10">
+                <h1 class="font-cinzel text-3xl text-essenza-black tracking-widest mb-2">Pedidos</h1>
+                <p class="text-sm text-essenza-gray font-light">Histórico de compras simuladas pelos clientes neste navegador.</p>
             </div>
+            <div id="lista-pedidos-admin" class="space-y-4"></div>
         </section>
-
-        <!-- ========================================== -->
-        <!-- PÁGINA 5: MEUS PEDIDOS                     -->
-        <!-- ========================================== -->
-        <section id="pedidos" class="page-section flex-1 py-20 px-6 max-w-4xl mx-auto w-full">
-            <div class="pt-10">
-                <h2 class="font-cinzel text-3xl text-essenza-black tracking-widest mb-10 border-b border-essenza-gold pb-4">Histórico de Pedidos</h2>
-                <div id="lista-pedidos" class="space-y-6"></div>
-            </div>
-        </section>
-
-        <!-- ========================================== -->
-        <!-- FOOTER                                     -->
-        <!-- ========================================== -->
-        <footer class="bg-essenza-black text-essenza-beige-light border-t-4 border-essenza-gold mt-auto">
-            <div class="max-w-7xl mx-auto px-6 py-12 grid grid-cols-1 md:grid-cols-4 gap-12 text-center md:text-left">
-                <div class="md:col-span-2">
-                    <h2 class="font-cinzel text-2xl tracking-[0.2em] mb-2">ESSENZA</h2>
-                    <p class="font-montserrat text-essenza-gold tracking-[0.3em] uppercase text-xs mb-6">— Velas Aromáticas —</p>
-                    <p class="text-xs text-essenza-beige-dark max-w-sm leading-relaxed mx-auto md:mx-0">Criando atmosferas únicas e transformando ambientes através de fragrâncias exclusivas e sustentáveis.</p>
-                </div>
-                <div>
-                    <h4 class="font-bold text-xs uppercase tracking-widest text-essenza-gold mb-6">Navegação</h4>
-                    <ul class="space-y-3 text-xs text-essenza-beige-dark">
-                        <li><a href="#catalogo" class="hover:text-white transition-colors">Catálogo</a></li>
-                        <li><a href="#sobre" class="hover:text-white transition-colors">A Marca</a></li>
-                        <li><a href="#pedidos" class="hover:text-white transition-colors">Meus Pedidos</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="font-bold text-xs uppercase tracking-widest text-essenza-gold mb-6">Contato</h4>
-                    <ul class="space-y-3 text-xs text-essenza-beige-dark">
-                        <li>contato@essenzavelas.com</li>
-                        <li>(51) 99999-0959</li>
-                        <li class="pt-2"><a href="#" class="text-essenza-gold hover:text-white underline">Instagram: @essenza.velas</a></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="text-center font-cinzel text-essenza-beige-dark tracking-widest text-[10px] border-t border-essenza-gray/30 py-6">
-                <p>ACENDA SENTIMENTOS, CRIE MEMÓRIAS.</p>
-                <p class="mt-2 text-gray-500 font-montserrat tracking-normal">© 2026 Essenza Velas. Trabalho Acadêmico.</p>
-            </div>
-        </footer>
     </div>
 
     <!-- ========================================== -->
-    <!-- CARRINHO LATERAL (SIDEBAR)                 -->
+    <!-- MODAL PRODUTO (ADICIONAR / EDITAR)          -->
     <!-- ========================================== -->
-    <div id="cart-sidebar" class="fixed inset-y-0 right-0 w-full md:w-[450px] bg-white shadow-2xl z-[60] flex flex-col cart-closed transition-transform duration-300">
-        <div class="p-6 bg-essenza-black text-essenza-beige-light flex justify-between items-center">
-            <h2 class="font-cinzel text-xl tracking-widest">Seu Carrinho</h2>
-            <button onclick="toggleCart()" class="text-essenza-gold text-xl">&times;</button>
-        </div>
-        
-        <div id="cart-items" class="flex-1 overflow-y-auto p-6 space-y-4 bg-gray-50 hide-scrollbar"></div>
+    <div id="modal-produto" class="fixed inset-0 bg-black/70 z-[70] hidden flex items-center justify-center p-4 backdrop-blur-sm overflow-y-auto">
+        <div class="bg-white w-full max-w-lg rounded-sm border-t-4 border-essenza-gold relative my-10">
+            <div class="flex justify-between items-center p-6 border-b border-gray-100">
+                <h2 id="modal-produto-titulo" class="font-cinzel text-xl text-essenza-black">Novo Produto</h2>
+                <button onclick="fecharModalProduto()" class="text-gray-400 hover:text-black font-bold text-xl leading-none">&times;</button>
+            </div>
 
-        <div class="p-6 bg-white border-t border-gray-200">
-            <div class="flex gap-2 mb-6">
-                <input type="text" id="cupom-input" placeholder="Cupom (ex: PROMO10)" class="w-full border border-gray-300 px-3 py-2 text-sm uppercase focus:outline-none focus:border-essenza-black">
-                <button onclick="aplicarCupom()" class="bg-essenza-gray text-white px-4 text-xs tracking-wider uppercase hover:bg-black transition-colors">Aplicar</button>
-            </div>
-            
-            <div class="flex justify-between text-sm text-gray-500 mb-2">
-                <span>Subtotal:</span>
-                <span id="cart-subtotal">R$ 0,00</span>
-            </div>
-            <div class="flex justify-between text-sm text-green-600 mb-4 font-semibold" id="desconto-row" style="display: none;">
-                <span>Desconto:</span>
-                <span id="cart-desconto">- R$ 0,00</span>
-            </div>
-            <div class="flex justify-between text-xl font-bold text-essenza-black mb-6 border-t pt-4">
-                <span>Total:</span>
-                <span id="cart-total">R$ 0,00</span>
-            </div>
-            
-            <button onclick="abrirModalQR()" class="w-full bg-essenza-gold text-essenza-black py-4 uppercase text-sm font-bold tracking-widest hover:bg-essenza-black hover:text-essenza-gold transition-colors">
-                Finalizar Compra
-            </button>
-        </div>
-    </div>
-    <div id="cart-overlay" onclick="toggleCart()" class="fixed inset-0 bg-black/50 z-[55] hidden backdrop-blur-sm transition-opacity"></div>
+            <form id="form-produto" onsubmit="salvarProduto(event)" class="p-6 space-y-4">
+                <input type="hidden" id="produto-id">
 
-    <!-- ========================================== -->
-    <!-- MODAL DE CHECKOUT (QR CODE)                -->
-    <!-- ========================================== -->
-    <div id="checkout-modal" class="fixed inset-0 bg-black/80 z-[70] hidden flex items-center justify-center p-4 backdrop-blur-sm">
-        <div class="bg-white p-8 max-w-md w-full text-center rounded-sm border-t-4 border-essenza-gold relative">
-            <button onclick="fecharCheckout()" class="absolute top-4 right-4 text-gray-400 hover:text-black font-bold text-xl">&times;</button>
-            <h2 class="font-cinzel text-2xl text-essenza-black mb-2 mt-2">Pagamento Seguro</h2>
-            <p class="text-sm text-gray-600 mb-6">Aponte a câmera do celular para o QR Code abaixo para simular a conclusão da venda.</p>
-            
-            <div class="flex justify-center mb-6">
-                <!-- Imagem do QR gerada via API -->
-                <img id="qrcode-img" src="" alt="QR Code" class="w-52 h-52 border-4 border-essenza-beige-dark p-2">
-            </div>
-            
-            <p class="font-bold text-2xl mb-2 text-essenza-black" id="modal-total-text">Total: R$ 0,00</p>
-            <p class="text-xs text-gray-400 italic mb-6">O link abrirá a tela final no seu celular.</p>
+                <div>
+                    <label class="block text-[10px] uppercase tracking-widest font-bold text-essenza-gray mb-2">Nome do produto *</label>
+                    <input type="text" id="produto-nome" required placeholder="Ex: Cedro & Âmbar" class="w-full border border-gray-300 px-4 py-3 text-sm focus:outline-none focus:border-essenza-gold">
+                </div>
 
-            <button onclick="registrarPedidoSimulado()" class="text-sm underline text-essenza-gold hover:text-black">
-                Ou clique aqui se estiver no celular
-            </button>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-[10px] uppercase tracking-widest font-bold text-essenza-gray mb-2">Categoria *</label>
+                        <select id="produto-categoria" required class="w-full border border-gray-300 px-4 py-3 text-sm focus:outline-none focus:border-essenza-gold bg-white">
+                            <option value="Relaxamento">Relaxamento</option>
+                            <option value="Energia">Energia</option>
+                            <option value="Romance">Romance</option>
+                            <option value="Outra">Outra (personalizada)</option>
+                        </select>
+                        <input type="text" id="produto-categoria-custom" placeholder="Digite a categoria" class="hidden mt-2 w-full border border-gray-300 px-4 py-3 text-sm focus:outline-none focus:border-essenza-gold">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] uppercase tracking-widest font-bold text-essenza-gray mb-2">Preço (R$) *</label>
+                        <input type="number" id="produto-preco" required min="0" step="0.01" placeholder="89.90" class="w-full border border-gray-300 px-4 py-3 text-sm focus:outline-none focus:border-essenza-gold">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-[10px] uppercase tracking-widest font-bold text-essenza-gray mb-2">Descrição</label>
+                    <textarea id="produto-desc" rows="3" placeholder="Descreva o aroma e a experiência da vela..." class="w-full border border-gray-300 px-4 py-3 text-sm focus:outline-none focus:border-essenza-gold resize-none"></textarea>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-[10px] uppercase tracking-widest font-bold text-essenza-gray mb-2">Imagem 1</label>
+                        <input type="text" id="produto-img1" list="imagens-locais" placeholder="ex: 1.jpg ou URL completa" class="w-full border border-gray-300 px-4 py-3 text-sm focus:outline-none focus:border-essenza-gold">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] uppercase tracking-widest font-bold text-essenza-gray mb-2">Imagem 2 (opcional)</label>
+                        <input type="text" id="produto-img2" list="imagens-locais" placeholder="ex: 2.jpg ou URL completa" class="w-full border border-gray-300 px-4 py-3 text-sm focus:outline-none focus:border-essenza-gold">
+                    </div>
+                </div>
+                <datalist id="imagens-locais"></datalist>
+                <p class="text-[10px] text-gray-400">Dica: use o nome de uma imagem já existente no repositório (ex: 5.jpg) ou cole uma URL de imagem hospedada na web.</p>
+
+                <div class="flex gap-3 pt-4">
+                    <button type="button" onclick="fecharModalProduto()" class="flex-1 border border-gray-300 text-essenza-gray py-3 text-xs uppercase tracking-widest font-bold hover:bg-gray-50 transition-colors">Cancelar</button>
+                    <button type="submit" id="btn-salvar-produto" class="flex-1 bg-essenza-black text-essenza-gold py-3 text-xs uppercase tracking-widest font-bold hover:bg-essenza-gold hover:text-essenza-black transition-colors">Salvar Produto</button>
+                </div>
+            </form>
         </div>
     </div>
 
     <!-- TOAST MSG -->
     <div id="toast" class="fixed bottom-10 right-10 bg-essenza-black text-white p-4 shadow-2xl border-l-4 border-essenza-gold transform translate-y-24 opacity-0 transition-all duration-500 z-[100] rounded-sm">
-        <p class="text-xs font-bold uppercase tracking-wide">Adicionado ao carrinho!</p>
+        <p id="toast-msg" class="text-xs font-bold uppercase tracking-wide">Salvo com sucesso!</p>
     </div>
 
-    <!-- ========================================== -->
-    <!-- JAVASCRIPT GERAL                           -->
-    <!-- ========================================== -->
     <script>
-        // --- 1. BANCO DE DADOS FIXO (12 PRODUTOS ORIGINAIS) ---
-        const produtosPadrao = [
-            { id: 1, nome: "Lavanda Francesa", categoria: "Relaxamento", preco: 89.90, desc: "Aroma calmante ideal para o quarto. Promove relaxamento e induz a um sono profundo e reparador.", imgs: ["1.jpg", "2.jpg"] },
-            { id: 2, nome: "Baunilha & Canela", categoria: "Romance", preco: 95.00, desc: "Adoce o ambiente. Um aroma gourmand levemente especiado, perfeito para criar memórias de inverno.", imgs: ["3.jpg", "4.jpg"] },
-            { id: 3, nome: "Alecrim Silvestre", categoria: "Energia", preco: 85.00, desc: "Fresco, herbáceo e intensamente revigorante. Excelente para o ambiente de trabalho e aumento de foco.", imgs: ["5.jpg", "6.jpg"] },
-            { id: 4, nome: "Capim Limão", categoria: "Energia", preco: 79.90, desc: "Cítrico e vibrante. Neutraliza odores e renova instantaneamente a energia de salas e cozinhas.", imgs: ["7.jpg", "8.jpg"] },
-            { id: 5, nome: "Rosas Brancas", categoria: "Romance", preco: 110.00, desc: "Floral aveludado e sofisticado. A essência do romance clássico encapsulada em cera vegetal.", imgs: ["9.jpg", "10.jpg"] },
-            { id: 6, nome: "Camomila & Mel", categoria: "Relaxamento", preco: 92.00, desc: "Um verdadeiro abraço em forma de aroma. Ajuda a desacelerar a mente após um dia intenso.", imgs: ["11.jpg", "12.jpg"] },
-            { id: 7, nome: "Brisa do Oceano", categoria: "Energia", preco: 88.00, desc: "Notas aquáticas e frescas que remetem a uma caminhada matinal pela praia.", imgs: ["13.jpg", "14.jpg"] },
-            { id: 8, nome: "Sândalo Negro", categoria: "Romance", preco: 125.00, desc: "Amadeirado intenso, quente e misterioso. Possui alta fixação e perfumação contínua.", imgs: ["15.jpg", "16.jpg"] },
-            { id: 9, nome: "Chá Branco", categoria: "Relaxamento", preco: 98.00, desc: "O cheiro do requinte. Remete a spas e hotéis de luxo, trazendo leveza ao seu espaço.", imgs: ["17.jpg", "18.jpg"] },
-            { id: 10, nome: "Flor de Laranjeira", categoria: "Energia", preco: 82.00, desc: "Alegria engarrafada. Um aroma cítrico floral expansivo, excelente para receber visitas.", imgs: ["19.jpg", "20.jpg"] },
-            { id: 11, nome: "Jasmim da Noite", categoria: "Romance", preco: 105.00, desc: "Sensual e muito marcante. Desperta sentimentos profundos e decora com elegância.", imgs: ["21.jpg", "22.jpg"] },
-            { id: 12, nome: "Eucalipto SPA", categoria: "Relaxamento", preco: 89.00, desc: "Desobstrui a mente e a respiração. Transforme o seu momento de banho em um autêntico SPA.", imgs: ["23.jpg", "21.jpg"] }
-        ];
-
-        // --- 2. INTEGRAÇÃO COM MOCKAPI ---
-        // É o mesmo endereço usado no admin.html.
+        // --- CONFIG ---
+        // Mesmo endereço usado no index.html — os produtos cadastrados aqui aparecem na loja.
         const API_URL = 'https://6a8370cfcb486d243403b23a.mockapi.io/produtos';
+        const TOTAL_PRODUTOS_FIXOS = 12;
 
-        // Começa com os 12 produtos originais.
-        let produtos = [...produtosPadrao];
+        let produtosNuvem = [];
 
-        // Converte os produtos vindos da API para o mesmo formato usado pela loja.
-        // O prefixo "api-" evita conflito entre IDs do MockAPI e os IDs 1..12 dos produtos originais.
-        function normalizarProdutoNuvem(p) {
-            let preco = Number(p.preco);
-            if (isNaN(preco)) preco = 0;
-
-            let imgs = Array.isArray(p.imgs) ? p.imgs : [];
-            imgs = imgs.filter(Boolean);
-
-            if (imgs.length === 0) imgs = ['banner-home.png'];
-
-            return {
-                ...p,
-                id: `api-${p.id}`,
-                apiId: p.id,
-                nome: p.nome || 'Produto sem nome',
-                categoria: p.categoria || 'Outros',
-                preco: preco,
-                desc: p.desc || p.descricao || '',
-                imgs: imgs
-            };
-        }
-
-        // --- 3. CARREGA OS PRODUTOS DA NUVEM ---
-        async function inicializarLoja() {
-            try {
-                const res = await fetch(API_URL);
-
-                if (!res.ok) {
-                    throw new Error(`Erro HTTP ${res.status}`);
-                }
-
-                const produtosNuvem = await res.json();
-
-                // Junta os 12 produtos fixos com os produtos cadastrados no admin.
-                produtos = [
-                    ...produtosPadrao,
-                    ...produtosNuvem.map(normalizarProdutoNuvem)
-                ];
-
-                console.log(`Essenza: ${produtosNuvem.length} produto(s) carregado(s) do MockAPI.`);
-            } catch (error) {
-                console.warn('Essenza: não foi possível carregar o MockAPI. Usando apenas os produtos padrão.', error);
-                produtos = [...produtosPadrao];
+        // --- IMAGENS LOCAIS DISPONÍVEIS (sugestão no formulário) ---
+        (function preencherDatalist() {
+            const datalist = document.getElementById('imagens-locais');
+            for (let i = 1; i <= 23; i++) {
+                const opt = document.createElement('option');
+                opt.value = `${i}.jpg`;
+                datalist.appendChild(opt);
             }
+        })();
 
-            gerarFiltrosCategorias();
-            injetarMaisVendidosHome();
-            renderizarCatalogo();
-
-            // Se a página abriu diretamente em um produto, renderiza novamente
-            // depois que os produtos da nuvem forem carregados.
-            router();
-        }
-
-        // --- 2. SISTEMA DE ROTAS SPA ---
-        function router() {
-            let hash = window.location.hash || '#home';
-            document.querySelectorAll('.page-section').forEach(sec => sec.classList.remove('active'));
-            
-            if(hash.startsWith('#produto=')) {
-                document.getElementById('produto-detalhe').classList.add('active');
-                const produtoId = decodeURIComponent(hash.substring('#produto='.length));
-                renderizarDetalhe(produtoId);
-            } else {
-                const page = document.querySelector(hash);
-                if(page) page.classList.add('active');
-            }
-            window.scrollTo(0, 0);
-        }
-        window.addEventListener('hashchange', router);
-
-        // --- 3. INJETAR "MAIS VENDIDOS" NA HOME ---
-        function injetarMaisVendidosHome() {
-            const vitrine = document.getElementById('vitrine-home');
-            const destaques = [produtos[0], produtos[7], produtos[2]]; // IDs 1, 8 e 3
-            
-            vitrine.innerHTML = destaques.map(prod => `
-                <div class="bg-white rounded border border-gray-100 shadow-sm hover:shadow-xl transition-all group flex flex-col cursor-pointer h-full relative" onclick="window.location.hash='#produto='+encodeURIComponent('${prod.id}')">
-                    ${prod.id === 1 ? '<div class="absolute top-4 left-4 bg-essenza-black text-essenza-gold text-[10px] uppercase tracking-widest px-3 py-1 z-10 font-bold">Nº 1 em Vendas</div>' : ''}
-                    <div class="overflow-hidden h-72 relative bg-gray-50">
-                        <img src="${prod.imgs[0]}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
-                    </div>
-                    <div class="p-6 text-center flex-1 flex flex-col bg-white">
-                        <p class="text-[10px] uppercase tracking-widest text-gray-400 mb-1 font-bold">${prod.categoria}</p>
-                        <h3 class="font-cinzel text-xl text-essenza-black font-bold">${prod.nome}</h3>
-                        <p class="text-xl text-essenza-black font-semibold mt-auto pt-4">R$ ${prod.preco.toFixed(2).replace('.', ',')}</p>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        // --- 4. CATÁLOGO E FILTROS ---
-        let categoriaAtual = 'Todas';
-
-        function gerarFiltrosCategorias() {
-            const container = document.querySelector('#catalogo .flex.gap-2');
-            if (!container) return;
-
-            const categorias = [...new Set(produtos.map(p => p.categoria).filter(Boolean))]
-                .sort((a, b) => a.localeCompare(b, 'pt-BR'));
-
-            container.innerHTML = `
-                <button onclick="filtrarCategoria('Todas')" class="filter-btn active bg-essenza-black text-white px-4 py-2 text-xs uppercase tracking-wider whitespace-nowrap">Todas</button>
-                ${categorias.map(cat => `
-                    <button onclick="filtrarCategoria(${JSON.stringify(cat)})" class="filter-btn bg-white border border-gray-300 text-essenza-gray px-4 py-2 text-xs uppercase tracking-wider whitespace-nowrap">${cat}</button>
-                `).join('')}
-            `;
-        }
-
-        function renderizarCatalogo(filtroTexto = '') {
-            const grid = document.getElementById('grid-produtos');
-            grid.innerHTML = '';
-            
-            produtos.forEach(prod => {
-                if (categoriaAtual !== 'Todas' && prod.categoria !== categoriaAtual) return;
-                if (filtroTexto && !prod.nome.toLowerCase().includes(filtroTexto.toLowerCase())) return;
-
-                grid.innerHTML += `
-                    <div class="bg-white rounded border border-gray-100 shadow-sm hover:shadow-xl transition-all group flex flex-col cursor-pointer h-full" onclick="window.location.hash='#produto='+encodeURIComponent('${prod.id}')">
-                        <div class="overflow-hidden h-64 relative bg-gray-50">
-                            <img src="${prod.imgs[0]}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
-                        </div>
-                        <div class="p-5 text-center flex-1 flex flex-col bg-white">
-                            <p class="text-[10px] uppercase tracking-widest text-essenza-gold mb-1 font-bold">${prod.categoria}</p>
-                            <h3 class="font-cinzel text-lg text-essenza-black font-bold leading-tight">${prod.nome}</h3>
-                            <p class="text-lg text-essenza-black font-semibold mt-auto pt-4">R$ ${prod.preco.toFixed(2).replace('.', ',')}</p>
-                        </div>
-                    </div>
-                `;
-            });
-        }
-
-        function filtrarCategoria(cat) {
-            categoriaAtual = cat;
-            document.querySelectorAll('.filter-btn').forEach(btn => {
-                btn.classList.remove('bg-essenza-black', 'text-white');
-                btn.classList.add('bg-white', 'text-essenza-gray');
-                if(btn.innerText === cat) {
-                    btn.classList.add('bg-essenza-black', 'text-white');
-                    btn.classList.remove('bg-white', 'text-essenza-gray');
-                }
-            });
-            renderizarCatalogo(document.getElementById('searchInput').value);
-        }
-        function filtrarProdutos() { renderizarCatalogo(document.getElementById('searchInput').value); }
-
-        // --- 5. DETALHE DO PRODUTO ---
-        function renderizarDetalhe(id) {
-            const prod = produtos.find(p => String(p.id) === String(id));
-            if(!prod) return;
-
-            let galeriaHtml = prod.imgs.map(img => `<img src="${img}" onclick="document.getElementById('img-principal').src='${img}'" class="w-20 h-20 object-cover cursor-pointer border-2 border-transparent hover:border-essenza-gold transition-colors">`).join('');
-
-            document.getElementById('detalhe-container').innerHTML = `
-                <div>
-                    <img id="img-principal" src="${prod.imgs[0]}" class="w-full h-[400px] md:h-[550px] object-cover border shadow-sm mb-4">
-                    <div class="flex gap-4 justify-center">${galeriaHtml}</div>
-                </div>
-                <div class="flex flex-col justify-center">
-                    <p class="text-xs uppercase tracking-widest text-essenza-gold font-bold mb-2">${prod.categoria}</p>
-                    <h1 class="font-cinzel text-3xl md:text-5xl text-essenza-black mb-4">${prod.nome}</h1>
-                    <div class="w-16 h-[2px] bg-essenza-gold mb-6"></div>
-                    <p class="text-gray-500 mb-8 leading-relaxed text-sm md:text-base">${prod.desc}</p>
-                    <p class="text-3xl text-essenza-black font-semibold mb-8">R$ ${prod.preco.toFixed(2).replace('.', ',')}</p>
-                    
-                    <div class="flex flex-col md:flex-row gap-4 mb-6">
-                        <div class="border border-gray-300 flex items-center px-4 w-full md:w-32 justify-between py-2 md:py-0">
-                            <button onclick="mudarQtdDetalhe(-1)" class="text-xl text-gray-500 hover:text-black">&minus;</button>
-                            <span id="qtd-detalhe" class="font-bold text-essenza-black">1</span>
-                            <button onclick="mudarQtdDetalhe(1)" class="text-xl text-gray-500 hover:text-black">&plus;</button>
-                        </div>
-                        <button onclick="adicionarDoDetalhe(${prod.id})" class="flex-1 bg-essenza-black text-essenza-gold uppercase tracking-widest text-xs font-bold py-4 hover:bg-essenza-gold hover:text-essenza-black transition-colors">Adicionar ao Carrinho</button>
-                    </div>
-                    
-                    <div class="mt-8 border-t pt-6 text-xs text-gray-500 space-y-3">
-                        <p class="flex items-center gap-2"><span class="text-lg">🌿</span> Cera 100% vegetal</p>
-                        <p class="flex items-center gap-2"><span class="text-lg">🔥</span> Pavio de algodão puro</p>
-                    </div>
-                </div>
-            `;
-        }
-        
-        let qtdTemp = 1;
-        function mudarQtdDetalhe(delta) {
-            qtdTemp += delta;
-            if(qtdTemp < 1) qtdTemp = 1;
-            document.getElementById('qtd-detalhe').innerText = qtdTemp;
-        }
-
-        function adicionarDoDetalhe(id) {
-            const prod = produtos.find(p => p.id === id);
-            addToCart(prod, qtdTemp);
-            qtdTemp = 1;
-        }
-
-
-        // --- 6. CARRINHO E CUPOM ---
-        let cart = JSON.parse(localStorage.getItem('essenzaCart')) || [];
-        let descontoAtivo = 0;
-        let totalGlobal = 0; // Para uso no checkout
-
-        function addToCart(produto, qtd = 1) {
-            const itemExistente = cart.find(item => item.id === produto.id);
-            if(itemExistente) itemExistente.qtd += qtd;
-            else cart.push({ ...produto, qtd: qtd });
-            salvarCart();
-            
-            if(!isCartOpen) toggleCart();
+        // --- TOAST ---
+        function mostrarToast(msg) {
+            document.getElementById('toast-msg').innerText = msg;
             const toast = document.getElementById('toast');
             toast.classList.remove('translate-y-24', 'opacity-0');
             setTimeout(() => toast.classList.add('translate-y-24', 'opacity-0'), 2500);
         }
 
-        function mudarQtdCart(index, delta) {
-            cart[index].qtd += delta;
-            if(cart[index].qtd < 1) cart.splice(index, 1);
-            salvarCart();
-        }
+        // --- ROTEAMENTO POR ABAS ---
+        function router() {
+            let hash = window.location.hash || '#dashboard';
+            if (!['#dashboard', '#produtos', '#pedidos'].includes(hash)) hash = '#dashboard';
 
-        function salvarCart() {
-            localStorage.setItem('essenzaCart', JSON.stringify(cart));
-            updateCartUI();
-        }
+            document.querySelectorAll('.page-section').forEach(sec => sec.classList.remove('active'));
+            document.querySelector(hash).classList.add('active');
 
-        function aplicarCupom() {
-            const codigo = document.getElementById('cupom-input').value.toUpperCase();
-            if(codigo === 'PROMO10') {
-                descontoAtivo = 0.10;
-                alert('Cupom aplicado!');
-            } else {
-                descontoAtivo = 0;
-                alert('Cupom inválido.');
+            document.querySelectorAll('.nav-link').forEach(a => a.classList.remove('active-tab'));
+            document.querySelectorAll(`.nav-link[data-tab="${hash.substring(1)}"]`).forEach(a => a.classList.add('active-tab'));
+
+            if (hash === '#pedidos') renderizarPedidosAdmin();
+            if (hash === '#dashboard') renderizarDashboard();
+
+            window.scrollTo(0, 0);
+        }
+        window.addEventListener('hashchange', router);
+
+        // --- CARREGAR PRODUTOS DA NUVEM ---
+        async function carregarProdutos() {
+            const status = document.getElementById('produtos-status');
+            status.classList.remove('hidden');
+            try {
+                const res = await fetch(API_URL);
+                if (!res.ok) throw new Error(`Erro HTTP ${res.status}`);
+                produtosNuvem = await res.json();
+                status.classList.add('hidden');
+            } catch (err) {
+                console.warn('Essenza Admin: falha ao carregar produtos da nuvem.', err);
+                produtosNuvem = [];
+                status.innerHTML = '<p class="text-red-500">Não foi possível conectar à API de produtos agora. Verifique sua conexão e tente novamente.</p><button onclick="carregarProdutos().then(renderizarProdutosAdmin)" class="underline text-essenza-black font-semibold ml-1">Tentar de novo</button>';
             }
-            updateCartUI();
+            document.getElementById('kpi-produtos').innerText = TOTAL_PRODUTOS_FIXOS + produtosNuvem.length;
         }
 
-        function updateCartUI() {
-            const container = document.getElementById('cart-items');
-            document.getElementById('cart-count').innerText = cart.reduce((acc, item) => acc + item.qtd, 0);
-            
-            if(cart.length === 0) {
-                container.innerHTML = '<div class="text-center mt-10"><p class="text-gray-400 mb-4">Seu carrinho está vazio.</p><button onclick="toggleCart(); window.location.hash=\'#catalogo\'" class="text-xs uppercase font-bold text-essenza-gold underline border border-essenza-gold px-4 py-2 hover:bg-essenza-gold hover:text-black transition">Ir para a Loja</button></div>';
-                document.getElementById('cart-subtotal').innerText = 'R$ 0,00';
-                document.getElementById('cart-total').innerText = 'R$ 0,00';
-                document.getElementById('desconto-row').style.display = 'none';
-                totalGlobal = 0;
+        function renderizarProdutosAdmin() {
+            const grid = document.getElementById('grid-produtos-admin');
+
+            if (produtosNuvem.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-full bg-white border border-dashed border-gray-300 rounded p-10 text-center">
+                        <p class="text-gray-500 mb-4 text-sm">Nenhum produto adicional cadastrado ainda.</p>
+                        <button onclick="abrirModalProduto()" class="text-xs font-bold uppercase text-essenza-black underline hover:text-essenza-gold">Cadastrar o primeiro produto</button>
+                    </div>`;
                 return;
             }
 
-            let subtotal = 0;
-            container.innerHTML = cart.map((item, index) => {
-                subtotal += item.preco * item.qtd;
+            grid.innerHTML = produtosNuvem.map(p => {
+                const imgs = Array.isArray(p.imgs) ? p.imgs.filter(Boolean) : [];
+                const imgSrc = imgs[0] || 'banner-home.png';
+                const preco = Number(p.preco) || 0;
                 return `
-                    <div class="flex gap-4 bg-white p-4 border border-gray-100 rounded shadow-sm items-center">
-                        <img src="${item.imgs[0]}" class="w-16 h-16 object-cover rounded">
-                        <div class="flex-1">
-                            <h4 class="text-xs font-bold text-essenza-black mb-1">${item.nome}</h4>
-                            <p class="text-[10px] text-gray-500 mb-2">R$ ${item.preco.toFixed(2).replace('.', ',')} un</p>
-                            <div class="flex items-center gap-2">
-                                <button onclick="mudarQtdCart(${index}, -1)" class="bg-gray-100 text-gray-600 px-2 rounded hover:bg-gray-200 transition">-</button>
-                                <span class="text-xs font-bold w-4 text-center">${item.qtd}</span>
-                                <button onclick="mudarQtdCart(${index}, 1)" class="bg-gray-100 text-gray-600 px-2 rounded hover:bg-gray-200 transition">+</button>
-                            </div>
+                    <div class="bg-white border border-gray-100 shadow-sm rounded overflow-hidden flex flex-col">
+                        <div class="h-48 bg-gray-50 overflow-hidden">
+                            <img src="${imgSrc}" onerror="this.src='banner-home.png'" class="w-full h-full object-cover">
                         </div>
-                        <div class="text-right flex flex-col justify-between h-full">
-                            <button onclick="cart.splice(${index}, 1); salvarCart();" class="text-[10px] text-red-500 hover:underline mb-4">Remover</button>
-                            <p class="font-bold text-sm text-essenza-black">R$ ${(item.preco * item.qtd).toFixed(2).replace('.', ',')}</p>
+                        <div class="p-5 flex-1 flex flex-col">
+                            <p class="text-[10px] uppercase tracking-widest text-essenza-gold font-bold mb-1">${escapeHtml(p.categoria || 'Outros')}</p>
+                            <h3 class="font-cinzel text-base text-essenza-black font-bold mb-2">${escapeHtml(p.nome || 'Sem nome')}</h3>
+                            <p class="text-xs text-gray-500 flex-1 mb-3 line-clamp-3">${escapeHtml(p.desc || p.descricao || '')}</p>
+                            <p class="text-lg font-semibold text-essenza-black mb-4">R$ ${preco.toFixed(2).replace('.', ',')}</p>
+                            <div class="flex gap-2">
+                                <button onclick='abrirModalProduto(${JSON.stringify(String(p.id))})' class="flex-1 border border-essenza-black text-essenza-black text-[10px] uppercase tracking-widest font-bold py-2 hover:bg-essenza-black hover:text-white transition-colors">Editar</button>
+                                <button onclick="excluirProduto('${p.id}')" class="flex-1 border border-red-400 text-red-500 text-[10px] uppercase tracking-widest font-bold py-2 hover:bg-red-500 hover:text-white transition-colors">Excluir</button>
+                            </div>
                         </div>
                     </div>
                 `;
             }).join('');
-
-            const valorDesconto = subtotal * descontoAtivo;
-            totalGlobal = subtotal - valorDesconto; // Salva na global para o Checkout
-
-            document.getElementById('cart-subtotal').innerText = `R$ ${subtotal.toFixed(2).replace('.', ',')}`;
-            if(descontoAtivo > 0) {
-                document.getElementById('desconto-row').style.display = 'flex';
-                document.getElementById('cart-desconto').innerText = `- R$ ${valorDesconto.toFixed(2).replace('.', ',')}`;
-            }
-            document.getElementById('cart-total').innerText = `R$ ${totalGlobal.toFixed(2).replace('.', ',')}`;
         }
 
-        let isCartOpen = false;
-        function toggleCart() {
-            const sidebar = document.getElementById('cart-sidebar');
-            const overlay = document.getElementById('cart-overlay');
-            isCartOpen = !isCartOpen;
-            if (isCartOpen) {
-                sidebar.classList.remove('cart-closed');
-                sidebar.classList.add('cart-open');
-                overlay.classList.remove('hidden');
-                updateCartUI();
+        function escapeHtml(str) {
+            const div = document.createElement('div');
+            div.innerText = str;
+            return div.innerHTML;
+        }
+
+        // --- MODAL DE PRODUTO ---
+        function abrirModalProduto(id = null) {
+            const form = document.getElementById('form-produto');
+            form.reset();
+            document.getElementById('produto-categoria-custom').classList.add('hidden');
+
+            if (id) {
+                const p = produtosNuvem.find(prod => String(prod.id) === String(id));
+                if (!p) return;
+                document.getElementById('modal-produto-titulo').innerText = 'Editar Produto';
+                document.getElementById('produto-id').value = p.id;
+                document.getElementById('produto-nome').value = p.nome || '';
+                document.getElementById('produto-preco').value = Number(p.preco) || '';
+                document.getElementById('produto-desc').value = p.desc || p.descricao || '';
+
+                const categoriasPadrao = ['Relaxamento', 'Energia', 'Romance'];
+                const select = document.getElementById('produto-categoria');
+                if (categoriasPadrao.includes(p.categoria)) {
+                    select.value = p.categoria;
+                } else {
+                    select.value = 'Outra';
+                    document.getElementById('produto-categoria-custom').classList.remove('hidden');
+                    document.getElementById('produto-categoria-custom').value = p.categoria || '';
+                }
+
+                const imgs = Array.isArray(p.imgs) ? p.imgs.filter(Boolean) : [];
+                document.getElementById('produto-img1').value = imgs[0] || '';
+                document.getElementById('produto-img2').value = imgs[1] || '';
             } else {
-                sidebar.classList.remove('cart-open');
-                sidebar.classList.add('cart-closed');
-                overlay.classList.add('hidden');
+                document.getElementById('modal-produto-titulo').innerText = 'Novo Produto';
+                document.getElementById('produto-id').value = '';
+            }
+
+            document.getElementById('modal-produto').classList.remove('hidden');
+        }
+
+        function fecharModalProduto() {
+            document.getElementById('modal-produto').classList.add('hidden');
+        }
+
+        document.getElementById('produto-categoria').addEventListener('change', function() {
+            document.getElementById('produto-categoria-custom').classList.toggle('hidden', this.value !== 'Outra');
+        });
+
+        async function salvarProduto(event) {
+            event.preventDefault();
+            const btn = document.getElementById('btn-salvar-produto');
+            const id = document.getElementById('produto-id').value;
+
+            let categoria = document.getElementById('produto-categoria').value;
+            if (categoria === 'Outra') {
+                categoria = document.getElementById('produto-categoria-custom').value.trim() || 'Outros';
+            }
+
+            const imgs = [document.getElementById('produto-img1').value.trim(), document.getElementById('produto-img2').value.trim()].filter(Boolean);
+
+            const payload = {
+                nome: document.getElementById('produto-nome').value.trim(),
+                categoria: categoria,
+                preco: parseFloat(document.getElementById('produto-preco').value) || 0,
+                desc: document.getElementById('produto-desc').value.trim(),
+                imgs: imgs
+            };
+
+            btn.disabled = true;
+            btn.innerText = 'Salvando...';
+
+            try {
+                const res = await fetch(id ? `${API_URL}/${id}` : API_URL, {
+                    method: id ? 'PUT' : 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if (!res.ok) throw new Error(`Erro HTTP ${res.status}`);
+
+                fecharModalProduto();
+                mostrarToast(id ? 'Produto atualizado!' : 'Produto cadastrado!');
+                await carregarProdutos();
+                renderizarProdutosAdmin();
+            } catch (err) {
+                console.error('Essenza Admin: falha ao salvar produto.', err);
+                alert('Não foi possível salvar o produto agora. Verifique sua conexão e tente novamente.');
+            } finally {
+                btn.disabled = false;
+                btn.innerText = 'Salvar Produto';
             }
         }
 
+        async function excluirProduto(id) {
+            if (!confirm('Tem certeza que deseja excluir este produto? Essa ação não pode ser desfeita.')) return;
+            try {
+                const res = await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+                if (!res.ok) throw new Error(`Erro HTTP ${res.status}`);
+                mostrarToast('Produto excluído.');
+                await carregarProdutos();
+                renderizarProdutosAdmin();
+            } catch (err) {
+                console.error('Essenza Admin: falha ao excluir produto.', err);
+                alert('Não foi possível excluir o produto agora. Verifique sua conexão e tente novamente.');
+            }
+        }
 
-        // --- 7. CHECKOUT / QR CODE / PEDIDOS ---
-        
-        function abrirModalQR() {
-            if (cart.length === 0) {
-                alert("Seu carrinho está vazio!");
+        // --- PEDIDOS (lidos do localStorage, mesma origem da loja) ---
+        function getPedidos() {
+            return JSON.parse(localStorage.getItem('essenzaPedidos')) || [];
+        }
+
+        function renderizarPedidosAdmin() {
+            const pedidos = getPedidos();
+            const lista = document.getElementById('lista-pedidos-admin');
+
+            if (pedidos.length === 0) {
+                lista.innerHTML = '<div class="bg-gray-50 border border-gray-200 p-8 text-center rounded"><p class="text-gray-500">Nenhum pedido registrado neste navegador ainda.</p><p class="text-xs text-gray-400 mt-2">Simule uma compra na loja para ver o pedido aparecer aqui.</p></div>';
                 return;
             }
 
-            const totalFormatado = totalGlobal.toFixed(2);
-            document.getElementById('modal-total-text').innerText = `R$ ${totalFormatado.replace('.', ',')}`;
-            
-            // URL EXATA do seu repositório no GitHub Pages
-            const urlPagamento = `https://andryocuba-97.github.io/essenza/pagamento.html?valor=${totalFormatado}`;
-            
-            // Gerar imagem do QR Code
-            const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(urlPagamento)}`;
-            document.getElementById('qrcode-img').src = qrUrl;
-
-            document.getElementById('checkout-modal').classList.remove('hidden');
-            toggleCart(); // Fecha a sidebar
-        }
-
-        function fecharCheckout() {
-            document.getElementById('checkout-modal').classList.add('hidden');
-        }
-
-        let pedidos = JSON.parse(localStorage.getItem('essenzaPedidos')) || [];
-
-        function renderizarPedidos() {
-            const lista = document.getElementById('lista-pedidos');
-            if(pedidos.length === 0) {
-                lista.innerHTML = '<div class="bg-gray-50 border border-gray-200 p-8 text-center rounded"><p class="text-gray-500 mb-4">Você ainda não possui pedidos concluídos.</p><a href="#catalogo" class="text-xs font-bold uppercase text-essenza-black underline hover:text-essenza-gold">Fazer primeira compra</a></div>';
-                return;
-            }
-            
             lista.innerHTML = pedidos.slice().reverse().map(ped => `
-                <div class="border border-gray-200 p-6 rounded bg-white shadow-sm flex flex-col md:flex-row justify-between items-center gap-4">
-                    <div>
-                        <p class="text-xs text-gray-400 font-bold uppercase tracking-widest">Pedido #${ped.id}</p>
-                        <p class="text-sm text-essenza-black mt-1 font-semibold">${ped.data}</p>
-                        <p class="text-xs text-gray-500 mt-2">${ped.itens.length} iten(s)</p>
+                <div class="border border-gray-200 p-6 rounded bg-white shadow-sm">
+                    <div class="flex flex-col md:flex-row justify-between md:items-center gap-3 mb-4">
+                        <div>
+                            <p class="text-xs text-gray-400 font-bold uppercase tracking-widest">Pedido #${ped.id}</p>
+                            <p class="text-sm text-essenza-black mt-1 font-semibold">${ped.data}</p>
+                        </div>
+                        <div class="text-left md:text-right">
+                            <span class="bg-green-100 text-green-800 text-[10px] uppercase font-bold px-3 py-1 rounded-full inline-block mb-1">Pagamento Aprovado</span>
+                            <p class="text-xl font-bold text-essenza-black">R$ ${ped.total}</p>
+                        </div>
                     </div>
-                    <div class="text-left md:text-right w-full md:w-auto border-t md:border-t-0 pt-4 md:pt-0 mt-4 md:mt-0">
-                        <span class="bg-green-100 text-green-800 text-[10px] uppercase font-bold px-3 py-1 rounded-full mb-2 inline-block">Pagamento Aprovado</span>
-                        <p class="text-xl font-bold text-essenza-black mt-1">R$ ${ped.total}</p>
+                    <div class="border-t border-gray-100 pt-3 space-y-1">
+                        ${(ped.itens || []).map(item => `
+                            <div class="flex justify-between text-xs text-gray-500">
+                                <span>${item.qtd}x ${escapeHtml(item.nome)}</span>
+                                <span>R$ ${(item.preco * item.qtd).toFixed(2).replace('.', ',')}</span>
+                            </div>
+                        `).join('')}
                     </div>
                 </div>
             `).join('');
         }
 
-        // Esta função é chamada se o professor clicar no link dentro do modal (caso esteja testando pelo PC e não use o celular)
-        function registrarPedidoSimulado() {
-            const totalFormatado = totalGlobal.toFixed(2).replace('.', ',');
-            
-            const novoPedido = {
-                id: Math.floor(Math.random() * 1000000),
-                data: new Date().toLocaleDateString('pt-BR') + ' às ' + new Date().toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'}),
-                itens: [...cart],
-                total: totalFormatado
-            };
-            pedidos.push(novoPedido);
-            localStorage.setItem('essenzaPedidos', JSON.stringify(pedidos));
-            
-            cart = [];
-            descontoAtivo = 0;
-            salvarCart();
-            document.getElementById('cupom-input').value = '';
-            
-            alert('Compra simulada com sucesso! Seu pedido foi registrado.');
-            fecharCheckout();
-            window.location.hash = '#pedidos';
-            renderizarPedidos();
+        function renderizarDashboard() {
+            const pedidos = getPedidos();
+            const faturamento = pedidos.reduce((acc, p) => acc + (parseFloat(String(p.total).replace(',', '.')) || 0), 0);
+            const ticketMedio = pedidos.length > 0 ? faturamento / pedidos.length : 0;
+
+            document.getElementById('kpi-faturamento').innerText = `R$ ${faturamento.toFixed(2).replace('.', ',')}`;
+            document.getElementById('kpi-pedidos').innerText = pedidos.length;
+            document.getElementById('kpi-ticket').innerText = `R$ ${ticketMedio.toFixed(2).replace('.', ',')}`;
+
+            const ultimos = document.getElementById('dashboard-ultimos-pedidos');
+            if (pedidos.length === 0) {
+                ultimos.innerHTML = '<p class="text-sm text-gray-400">Nenhum pedido registrado ainda.</p>';
+                return;
+            }
+            ultimos.innerHTML = pedidos.slice().reverse().slice(0, 5).map(ped => `
+                <div class="flex justify-between items-center text-sm border-b border-gray-50 pb-3">
+                    <div>
+                        <p class="font-semibold text-essenza-black">Pedido #${ped.id}</p>
+                        <p class="text-xs text-gray-400">${ped.data}</p>
+                    </div>
+                    <p class="font-bold text-essenza-black">R$ ${ped.total}</p>
+                </div>
+            `).join('');
         }
 
         // --- INICIALIZAÇÃO ---
-        // Carrinho e pedidos continuam locais ao navegador.
-        // O catálogo é carregado pelo MockAPI através de inicializarLoja().
-        renderizarPedidos();
-        updateCartUI();
-        inicializarLoja();
-        router(); 
+        (async function init() {
+            await carregarProdutos();
+            renderizarProdutosAdmin();
+            renderizarDashboard();
+            router();
+        })();
     </script>
 </body>
 </html>
