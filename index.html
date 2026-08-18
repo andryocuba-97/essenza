@@ -514,12 +514,21 @@
             const categorias = [...new Set(produtos.map(p => p.categoria).filter(Boolean))]
                 .sort((a, b) => a.localeCompare(b, 'pt-BR'));
 
-            container.innerHTML = `
-                <button onclick="filtrarCategoria('Todas')" class="filter-btn active bg-essenza-black text-white px-4 py-2 text-xs uppercase tracking-wider whitespace-nowrap">Todas</button>
-                ${categorias.map(cat => `
-                    <button onclick="filtrarCategoria(${JSON.stringify(cat)})" class="filter-btn bg-white border border-gray-300 text-essenza-gray px-4 py-2 text-xs uppercase tracking-wider whitespace-nowrap">${cat}</button>
-                `).join('')}
-            `;
+            container.innerHTML = '';
+
+            const criarBotaoFiltro = (nome, ativo) => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.textContent = nome;
+                btn.className = `filter-btn px-4 py-2 text-xs uppercase tracking-wider whitespace-nowrap ${ativo ? 'active bg-essenza-black text-white' : 'bg-white border border-gray-300 text-essenza-gray'}`;
+                // addEventListener em vez de onclick inline: evita quebrar o HTML quando a
+                // categoria tem aspas, acentos ou qualquer caractere especial.
+                btn.addEventListener('click', () => filtrarCategoria(nome));
+                return btn;
+            };
+
+            container.appendChild(criarBotaoFiltro('Todas', true));
+            categorias.forEach(cat => container.appendChild(criarBotaoFiltro(cat, false)));
         }
 
         function renderizarCatalogo(filtroTexto = '') {
@@ -554,10 +563,10 @@
             categoriaAtual = cat;
             document.querySelectorAll('.filter-btn').forEach(btn => {
                 btn.classList.remove('bg-essenza-black', 'text-white');
-                btn.classList.add('bg-white', 'text-essenza-gray');
+                btn.classList.add('bg-white', 'border', 'border-gray-300', 'text-essenza-gray');
                 if(btn.innerText === cat) {
                     btn.classList.add('bg-essenza-black', 'text-white');
-                    btn.classList.remove('bg-white', 'text-essenza-gray');
+                    btn.classList.remove('bg-white', 'border', 'border-gray-300', 'text-essenza-gray');
                 }
             });
             renderizarCatalogo(document.getElementById('searchInput').value);
