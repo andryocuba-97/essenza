@@ -109,15 +109,21 @@
         <!-- PRODUTOS                                    -->
         <!-- ========================================== -->
         <section id="produtos" class="page-section">
-            <div class="flex flex-col md:flex-row justify-between md:items-end gap-4 mb-10">
+            <div class="flex flex-col md:flex-row justify-between md:items-end gap-4 mb-6">
                 <div>
                     <h1 class="font-cinzel text-3xl text-essenza-black tracking-widest mb-2">Produtos</h1>
-                    <p class="text-sm text-essenza-gray font-light max-w-xl">Os 12 produtos de lançamento são fixos no código da loja. Aqui você cadastra, edita e remove os produtos adicionais, sincronizados em nuvem via API.</p>
+                    <p class="text-sm text-essenza-gray font-light max-w-xl">Catálogo sincronizado em nuvem via API. Cadastre, edite, remova e controle o estoque de cada produto.</p>
                 </div>
-                <button onclick="abrirModalProduto()" class="bg-essenza-black text-essenza-gold px-6 py-3 uppercase text-xs font-bold tracking-widest hover:bg-essenza-gold hover:text-essenza-black transition-colors whitespace-nowrap self-start md:self-auto">
-                    + Novo Produto
-                </button>
+                <div class="flex gap-3 self-start md:self-auto">
+                    <button onclick="importarProdutosPadrao()" id="btn-importar-padrao" class="border border-essenza-black text-essenza-black px-5 py-3 uppercase text-xs font-bold tracking-widest hover:bg-essenza-black hover:text-white transition-colors whitespace-nowrap">
+                        Importar 12 Produtos de Lançamento
+                    </button>
+                    <button onclick="abrirModalProduto()" class="bg-essenza-black text-essenza-gold px-6 py-3 uppercase text-xs font-bold tracking-widest hover:bg-essenza-gold hover:text-essenza-black transition-colors whitespace-nowrap">
+                        + Novo Produto
+                    </button>
+                </div>
             </div>
+            <p id="importar-status" class="hidden text-xs text-essenza-gray mb-6"></p>
 
             <div id="produtos-status" class="flex items-center gap-3 text-xs text-essenza-gray mb-6">
                 <div class="spinner"></div> Carregando produtos da nuvem...
@@ -174,6 +180,12 @@
                 </div>
 
                 <div>
+                    <label class="block text-[10px] uppercase tracking-widest font-bold text-essenza-gray mb-2">Estoque (unidades) *</label>
+                    <input type="number" id="produto-estoque" required min="0" step="1" value="10" placeholder="10" class="w-full sm:w-40 border border-gray-300 px-4 py-3 text-sm focus:outline-none focus:border-essenza-gold">
+                    <p class="text-[10px] text-gray-400 mt-1">A loja avisa o cliente quando restarem 3 unidades ou menos, e bloqueia a compra quando chegar a zero.</p>
+                </div>
+
+                <div>
                     <label class="block text-[10px] uppercase tracking-widest font-bold text-essenza-gray mb-2">Descrição</label>
                     <textarea id="produto-desc" rows="3" placeholder="Descreva o aroma e a experiência da vela..." class="w-full border border-gray-300 px-4 py-3 text-sm focus:outline-none focus:border-essenza-gold resize-none"></textarea>
                 </div>
@@ -208,7 +220,23 @@
         // --- CONFIG ---
         // Mesmo endereço usado no index.html — os produtos cadastrados aqui aparecem na loja.
         const API_URL = 'https://6a8370cfcb486d243403b23a.mockapi.io/produtos';
-        const TOTAL_PRODUTOS_FIXOS = 12;
+
+        // Os mesmos 12 produtos de lançamento que ficavam fixos no código da loja.
+        // Usados apenas para a importação (botão "Importar 12 Produtos de Lançamento").
+        const PRODUTOS_LANCAMENTO = [
+            { nome: "Lavanda Francesa", categoria: "Relaxamento", preco: 89.90, desc: "Aroma calmante ideal para o quarto. Promove relaxamento e induz a um sono profundo e reparador.", imgs: ["1.jpg", "2.jpg"], estoque: 15 },
+            { nome: "Baunilha & Canela", categoria: "Romance", preco: 95.00, desc: "Adoce o ambiente. Um aroma gourmand levemente especiado, perfeito para criar memórias de inverno.", imgs: ["3.jpg", "4.jpg"], estoque: 15 },
+            { nome: "Alecrim Silvestre", categoria: "Energia", preco: 85.00, desc: "Fresco, herbáceo e intensamente revigorante. Excelente para o ambiente de trabalho e aumento de foco.", imgs: ["5.jpg", "6.jpg"], estoque: 15 },
+            { nome: "Capim Limão", categoria: "Energia", preco: 79.90, desc: "Cítrico e vibrante. Neutraliza odores e renova instantaneamente a energia de salas e cozinhas.", imgs: ["7.jpg", "8.jpg"], estoque: 15 },
+            { nome: "Rosas Brancas", categoria: "Romance", preco: 110.00, desc: "Floral aveludado e sofisticado. A essência do romance clássico encapsulada em cera vegetal.", imgs: ["9.jpg", "10.jpg"], estoque: 15 },
+            { nome: "Camomila & Mel", categoria: "Relaxamento", preco: 92.00, desc: "Um verdadeiro abraço em forma de aroma. Ajuda a desacelerar a mente após um dia intenso.", imgs: ["11.jpg", "12.jpg"], estoque: 15 },
+            { nome: "Brisa do Oceano", categoria: "Energia", preco: 88.00, desc: "Notas aquáticas e frescas que remetem a uma caminhada matinal pela praia.", imgs: ["13.jpg", "14.jpg"], estoque: 15 },
+            { nome: "Sândalo Negro", categoria: "Romance", preco: 125.00, desc: "Amadeirado intenso, quente e misterioso. Possui alta fixação e perfumação contínua.", imgs: ["15.jpg", "16.jpg"], estoque: 15 },
+            { nome: "Chá Branco", categoria: "Relaxamento", preco: 98.00, desc: "O cheiro do requinte. Remete a spas e hotéis de luxo, trazendo leveza ao seu espaço.", imgs: ["17.jpg", "18.jpg"], estoque: 15 },
+            { nome: "Flor de Laranjeira", categoria: "Energia", preco: 82.00, desc: "Alegria engarrafada. Um aroma cítrico floral expansivo, excelente para receber visitas.", imgs: ["19.jpg", "20.jpg"], estoque: 15 },
+            { nome: "Jasmim da Noite", categoria: "Romance", preco: 105.00, desc: "Sensual e muito marcante. Desperta sentimentos profundos e decora com elegância.", imgs: ["21.jpg", "22.jpg"], estoque: 15 },
+            { nome: "Eucalipto SPA", categoria: "Relaxamento", preco: 89.00, desc: "Desobstrui a mente e a respiração. Transforme o seu momento de banho em um autêntico SPA.", imgs: ["23.jpg", "21.jpg"], estoque: 15 }
+        ];
 
         let produtosNuvem = [];
 
@@ -262,7 +290,48 @@
                 produtosNuvem = [];
                 status.innerHTML = '<p class="text-red-500">Não foi possível conectar à API de produtos agora. Verifique sua conexão e tente novamente.</p><button onclick="carregarProdutos().then(renderizarProdutosAdmin)" class="underline text-essenza-black font-semibold ml-1">Tentar de novo</button>';
             }
-            document.getElementById('kpi-produtos').innerText = TOTAL_PRODUTOS_FIXOS + produtosNuvem.length;
+            document.getElementById('kpi-produtos').innerText = produtosNuvem.length;
+        }
+
+        // --- IMPORTAR OS 12 PRODUTOS DE LANÇAMENTO PARA A NUVEM ---
+        async function importarProdutosPadrao() {
+            const btn = document.getElementById('btn-importar-padrao');
+            const status = document.getElementById('importar-status');
+
+            const nomesExistentes = new Set(produtosNuvem.map(p => (p.nome || '').trim().toLowerCase()));
+            const faltando = PRODUTOS_LANCAMENTO.filter(p => !nomesExistentes.has(p.nome.trim().toLowerCase()));
+
+            if (faltando.length === 0) {
+                status.classList.remove('hidden');
+                status.innerText = 'Os 12 produtos de lançamento já estão importados.';
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerText = 'Importando...';
+            status.classList.remove('hidden');
+
+            let sucesso = 0;
+            for (const produto of faltando) {
+                try {
+                    const res = await fetch(API_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(produto)
+                    });
+                    if (res.ok) sucesso++;
+                } catch (err) {
+                    console.warn('Essenza Admin: falha ao importar produto.', produto.nome, err);
+                }
+            }
+
+            status.innerText = `${sucesso} de ${faltando.length} produto(s) importado(s). ${nomesExistentes.size > 0 ? nomesExistentes.size + ' já existia(m) e foram ignorados.' : ''}`;
+            btn.disabled = false;
+            btn.innerText = 'Importar 12 Produtos de Lançamento';
+
+            await carregarProdutos();
+            renderizarProdutosAdmin();
+            mostrarToast('Importação concluída!');
         }
 
         function renderizarProdutosAdmin() {
@@ -271,7 +340,7 @@
             if (produtosNuvem.length === 0) {
                 grid.innerHTML = `
                     <div class="col-span-full bg-white border border-dashed border-gray-300 rounded p-10 text-center">
-                        <p class="text-gray-500 mb-4 text-sm">Nenhum produto adicional cadastrado ainda.</p>
+                        <p class="text-gray-500 mb-4 text-sm">Nenhum produto cadastrado ainda.</p>
                         <button onclick="abrirModalProduto()" class="text-xs font-bold uppercase text-essenza-black underline hover:text-essenza-gold">Cadastrar o primeiro produto</button>
                     </div>`;
                 return;
@@ -281,16 +350,30 @@
                 const imgs = Array.isArray(p.imgs) ? p.imgs.filter(Boolean) : [];
                 const imgSrc = imgs[0] || 'banner-home.png';
                 const preco = Number(p.preco) || 0;
+                const estoque = (p.estoque === undefined || p.estoque === null || p.estoque === '') ? null : Number(p.estoque);
+
+                let estoqueBadge = '<span class="text-gray-400">Estoque não controlado</span>';
+                if (estoque !== null) {
+                    if (estoque <= 0) {
+                        estoqueBadge = '<span class="text-red-600 font-bold">Esgotado</span>';
+                    } else if (estoque <= 3) {
+                        estoqueBadge = `<span class="text-essenza-gold font-bold">Só ${estoque} un. restante(s)!</span>`;
+                    } else {
+                        estoqueBadge = `<span class="text-gray-500">${estoque} un. em estoque</span>`;
+                    }
+                }
+
                 return `
                     <div class="bg-white border border-gray-100 shadow-sm rounded overflow-hidden flex flex-col">
-                        <div class="h-48 bg-gray-50 overflow-hidden">
+                        <div class="h-48 bg-gray-50 overflow-hidden relative">
                             <img src="${imgSrc}" onerror="this.src='banner-home.png'" class="w-full h-full object-cover">
                         </div>
                         <div class="p-5 flex-1 flex flex-col">
                             <p class="text-[10px] uppercase tracking-widest text-essenza-gold font-bold mb-1">${escapeHtml(p.categoria || 'Outros')}</p>
                             <h3 class="font-cinzel text-base text-essenza-black font-bold mb-2">${escapeHtml(p.nome || 'Sem nome')}</h3>
                             <p class="text-xs text-gray-500 flex-1 mb-3 line-clamp-3">${escapeHtml(p.desc || p.descricao || '')}</p>
-                            <p class="text-lg font-semibold text-essenza-black mb-4">R$ ${preco.toFixed(2).replace('.', ',')}</p>
+                            <p class="text-lg font-semibold text-essenza-black mb-1">R$ ${preco.toFixed(2).replace('.', ',')}</p>
+                            <p class="text-xs mb-4">${estoqueBadge}</p>
                             <div class="flex gap-2">
                                 <button onclick='abrirModalProduto(${JSON.stringify(String(p.id))})' class="flex-1 border border-essenza-black text-essenza-black text-[10px] uppercase tracking-widest font-bold py-2 hover:bg-essenza-black hover:text-white transition-colors">Editar</button>
                                 <button onclick="excluirProduto('${p.id}')" class="flex-1 border border-red-400 text-red-500 text-[10px] uppercase tracking-widest font-bold py-2 hover:bg-red-500 hover:text-white transition-colors">Excluir</button>
@@ -320,6 +403,7 @@
                 document.getElementById('produto-id').value = p.id;
                 document.getElementById('produto-nome').value = p.nome || '';
                 document.getElementById('produto-preco').value = Number(p.preco) || '';
+                document.getElementById('produto-estoque').value = (p.estoque === undefined || p.estoque === null) ? 0 : Number(p.estoque);
                 document.getElementById('produto-desc').value = p.desc || p.descricao || '';
 
                 const categoriasPadrao = ['Relaxamento', 'Energia', 'Romance'];
@@ -367,6 +451,7 @@
                 nome: document.getElementById('produto-nome').value.trim(),
                 categoria: categoria,
                 preco: parseFloat(document.getElementById('produto-preco').value) || 0,
+                estoque: parseInt(document.getElementById('produto-estoque').value, 10) || 0,
                 desc: document.getElementById('produto-desc').value.trim(),
                 imgs: imgs
             };
