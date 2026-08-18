@@ -405,6 +405,11 @@
 
             if (imgs.length === 0) imgs = ['banner-home.png'];
 
+            // estoque null/undefined = não controlado (sempre disponível, sem avisos)
+            let estoque = p.estoque;
+            estoque = (estoque === undefined || estoque === null || estoque === '') ? null : Number(estoque);
+            if (estoque !== null && isNaN(estoque)) estoque = null;
+
             return {
                 ...p,
                 id: `api-${p.id}`,
@@ -413,11 +418,15 @@
                 categoria: p.categoria || 'Outros',
                 preco: preco,
                 desc: p.desc || p.descricao || '',
-                imgs: imgs
+                imgs: imgs,
+                estoque: estoque
             };
         }
 
         // --- 3. CARREGA OS PRODUTOS DA NUVEM ---
+        // O catálogo agora vem inteiramente do MockAPI (inclusive os 12 produtos de lançamento,
+        // depois de importados pelo Painel do Gestor). Os produtosPadrao só entram em cena
+        // como reserva, caso a API esteja fora do ar.
         async function inicializarLoja() {
             try {
                 const res = await fetch(API_URL);
@@ -427,16 +436,11 @@
                 }
 
                 const produtosNuvem = await res.json();
-
-                // Junta os 12 produtos fixos com os produtos cadastrados no admin.
-                produtos = [
-                    ...produtosPadrao,
-                    ...produtosNuvem.map(normalizarProdutoNuvem)
-                ];
+                produtos = produtosNuvem.map(normalizarProdutoNuvem);
 
                 console.log(`Essenza: ${produtosNuvem.length} produto(s) carregado(s) do MockAPI.`);
             } catch (error) {
-                console.warn('Essenza: não foi possível carregar o MockAPI. Usando apenas os produtos padrão.', error);
+                console.warn('Essenza: não foi possível carregar o MockAPI. Usando os produtos padrão como reserva.', error);
                 produtos = [...produtosPadrao];
             }
 
@@ -467,14 +471,27 @@
         }
         window.addEventListener('hashchange', router);
 
+        // --- 3. AVISOS DE ESTOQUE ---
+        // estoque === null -> não controlado, sem aviso. 0 -> esgotado. <=3 -> últimas unidades.
+        function badgeEstoqueHtml(estoque, posicao = 'top-4 left-4') {
+            if (estoque === null || estoque === undefined) return '';
+            if (estoque <= 0) {
+                return `<div class="absolute ${posicao} bg-red-600 text-white text-[10px] uppercase tracking-widest px-3 py-1 z-10 font-bold rounded-sm">Esgotado</div>`;
+            }
+            if (estoque <= 3) {
+                return `<div class="absolute ${posicao} bg-essenza-gold text-essenza-black text-[10px] uppercase tracking-widest px-3 py-1 z-10 font-bold rounded-sm">Só ${estoque} un.!</div>`;
+            }
+            return '';
+        }
+
         // --- 3. INJETAR "MAIS VENDIDOS" NA HOME ---
         function injetarMaisVendidosHome() {
             const vitrine = document.getElementById('vitrine-home');
-            const destaques = [produtos[0], produtos[7], produtos[2]]; // IDs 1, 8 e 3
+            const destaques = produtos.slice(0, 3);
             
-            vitrine.innerHTML = destaques.map(prod => `
+            vitrine.innerHTML = destaques.map((prod, index) => `
                 <div class="bg-white rounded border border-gray-100 shadow-sm hover:shadow-xl transition-all group flex flex-col cursor-pointer h-full relative" onclick="window.location.hash='#produto='+encodeURIComponent('${prod.id}')">
-                    ${prod.id === 1 ? '<div class="absolute top-4 left-4 bg-essenza-black text-essenza-gold text-[10px] uppercase tracking-widest px-3 py-1 z-10 font-bold">Nº 1 em Vendas</div>' : ''}
+                    ${index === 0 ? '<div class="absolute top-4 left-4 bg-essenza-black text-essenza-gold text-[10px] uppercase tracking-widest px-3 py-1 z-10 font-bold">Nº 1 em Vendas</div>' : badgeEstoqueHtml(prod.estoque)}
                     <div class="overflow-hidden h-72 relative bg-gray-50">
                         <img src="${prod.imgs[0]}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
                     </div>
@@ -515,8 +532,11 @@
                 if (categoriaAtual !== 'Todas' && prod.categoria !== categoriaAtual) return;
                 if (termoBusca && !normalizarTexto(prod.nome).includes(termoBusca)) return;
 
+                const esgotado = prod.estoque !== null && prod.estoque <= 0;
+
                 grid.innerHTML += `
-                    <div class="bg-white rounded border border-gray-100 shadow-sm hover:shadow-xl transition-all group flex flex-col cursor-pointer h-full" onclick="window.location.hash='#produto='+encodeURIComponent('${prod.id}')">
+                    <div class="bg-white rounded border border-gray-100 shadow-sm hover:shadow-xl transition-all group flex flex-col cursor-pointer h-full relative ${esgotado ? 'opacity-60' : ''}" onclick="window.location.hash='#produto='+encodeURIComponent('${prod.id}')">
+                        ${badgeEstoqueHtml(prod.estoque, 'top-3 left-3')}
                         <div class="overflow-hidden h-64 relative bg-gray-50">
                             <img src="${prod.imgs[0]}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
                         </div>
@@ -545,9 +565,18 @@
         function filtrarProdutos() { renderizarCatalogo(document.getElementById('searchInput').value); }
 
         // --- 5. DETALHE DO PRODUTO ---
+        let produtoDetalheAtual = null;
+
         function renderizarDetalhe(id) {
             const prod = produtos.find(p => String(p.id) === String(id));
             if(!prod) return;
+            produtoDetalheAtual = prod;
+            qtdTemp = 1;
+
+            const esgotado = prod.estoque !== null && prod.estoque <= 0;
+            const avisoEstoque = (prod.estoque !== null && prod.estoque > 0 && prod.estoque <= 3)
+                ? `<p class="text-xs font-bold text-essenza-gold mb-4 uppercase tracking-widest">Só ${prod.estoque} unidade(s) em estoque!</p>`
+                : '';
 
             let galeriaHtml = prod.imgs.map(img => `<img src="${img}" onclick="document.getElementById('img-principal').src='${img}'" class="w-20 h-20 object-cover cursor-pointer border-2 border-transparent hover:border-essenza-gold transition-colors">`).join('');
 
@@ -561,15 +590,17 @@
                     <h1 class="font-cinzel text-3xl md:text-5xl text-essenza-black mb-4">${prod.nome}</h1>
                     <div class="w-16 h-[2px] bg-essenza-gold mb-6"></div>
                     <p class="text-gray-500 mb-8 leading-relaxed text-sm md:text-base">${prod.desc}</p>
-                    <p class="text-3xl text-essenza-black font-semibold mb-8">R$ ${prod.preco.toFixed(2).replace('.', ',')}</p>
+                    <p class="text-3xl text-essenza-black font-semibold mb-2">R$ ${prod.preco.toFixed(2).replace('.', ',')}</p>
+                    ${avisoEstoque}
+                    ${esgotado ? '<p class="text-sm font-bold text-red-600 mb-4 uppercase tracking-widest">Produto esgotado</p>' : ''}
                     
                     <div class="flex flex-col md:flex-row gap-4 mb-6">
-                        <div class="border border-gray-300 flex items-center px-4 w-full md:w-32 justify-between py-2 md:py-0">
+                        <div class="border border-gray-300 flex items-center px-4 w-full md:w-32 justify-between py-2 md:py-0 ${esgotado ? 'opacity-40 pointer-events-none' : ''}">
                             <button onclick="mudarQtdDetalhe(-1)" class="text-xl text-gray-500 hover:text-black">&minus;</button>
                             <span id="qtd-detalhe" class="font-bold text-essenza-black">1</span>
                             <button onclick="mudarQtdDetalhe(1)" class="text-xl text-gray-500 hover:text-black">&plus;</button>
                         </div>
-                        <button onclick="adicionarDoDetalhe(${prod.id})" class="flex-1 bg-essenza-black text-essenza-gold uppercase tracking-widest text-xs font-bold py-4 hover:bg-essenza-gold hover:text-essenza-black transition-colors">Adicionar ao Carrinho</button>
+                        <button onclick="adicionarDoDetalhe('${prod.id}')" ${esgotado ? 'disabled' : ''} class="flex-1 ${esgotado ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-essenza-black text-essenza-gold hover:bg-essenza-gold hover:text-essenza-black'} uppercase tracking-widest text-xs font-bold py-4 transition-colors">${esgotado ? 'Esgotado' : 'Adicionar ao Carrinho'}</button>
                     </div>
                     
                     <div class="mt-8 border-t pt-6 text-xs text-gray-500 space-y-3">
@@ -584,11 +615,18 @@
         function mudarQtdDetalhe(delta) {
             qtdTemp += delta;
             if(qtdTemp < 1) qtdTemp = 1;
+
+            const max = (produtoDetalheAtual && produtoDetalheAtual.estoque !== null) ? produtoDetalheAtual.estoque : Infinity;
+            if (qtdTemp > max) {
+                qtdTemp = max;
+                alert(`Só temos ${max} unidade(s) em estoque.`);
+            }
             document.getElementById('qtd-detalhe').innerText = qtdTemp;
         }
 
         function adicionarDoDetalhe(id) {
-            const prod = produtos.find(p => p.id === id);
+            const prod = produtos.find(p => String(p.id) === String(id));
+            if (!prod) return;
             addToCart(prod, qtdTemp);
             qtdTemp = 1;
         }
@@ -601,6 +639,20 @@
 
         function addToCart(produto, qtd = 1) {
             const itemExistente = cart.find(item => item.id === produto.id);
+            const qtdAtualNoCarrinho = itemExistente ? itemExistente.qtd : 0;
+
+            if (produto.estoque !== null && produto.estoque !== undefined) {
+                const disponivel = produto.estoque - qtdAtualNoCarrinho;
+                if (disponivel <= 0) {
+                    alert('Este produto está esgotado.');
+                    return;
+                }
+                if (qtd > disponivel) {
+                    qtd = disponivel;
+                    alert(`Só temos ${produto.estoque} unidade(s) em estoque. Ajustamos a quantidade no carrinho.`);
+                }
+            }
+
             if(itemExistente) itemExistente.qtd += qtd;
             else cart.push({ ...produto, qtd: qtd });
             salvarCart();
@@ -612,8 +664,13 @@
         }
 
         function mudarQtdCart(index, delta) {
-            cart[index].qtd += delta;
-            if(cart[index].qtd < 1) cart.splice(index, 1);
+            const item = cart[index];
+            if (delta > 0 && item.estoque !== null && item.estoque !== undefined && item.qtd + delta > item.estoque) {
+                alert(`Só temos ${item.estoque} unidade(s) em estoque.`);
+                return;
+            }
+            item.qtd += delta;
+            if(item.qtd < 1) cart.splice(index, 1);
             salvarCart();
         }
 
@@ -782,7 +839,7 @@
             const payload = {
                 cliente_nome: cliente.nome,
                 cliente_telefone: cliente.telefone,
-                itens: cart.map(item => ({ id: item.id, nome: item.nome, preco: item.preco, qtd: item.qtd })),
+                itens: cart.map(item => ({ id: item.id, apiId: item.apiId || null, nome: item.nome, preco: item.preco, qtd: item.qtd })),
                 total: totalFormatado,
                 status: 'pendente',
                 data: new Date().toLocaleDateString('pt-BR') + ' às ' + new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
