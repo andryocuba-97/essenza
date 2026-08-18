@@ -69,6 +69,7 @@
 
     <script>
         const PEDIDOS_API_URL = 'https://6a8370cfcb486d243403b23a.mockapi.io/pedidos';
+        const PRODUTOS_API_URL = 'https://6a8370cfcb486d243403b23a.mockapi.io/produtos';
         let pedidoAtual = null;
 
         function mostrarTela(id) {
@@ -123,7 +124,7 @@
             }
         }
 
-        // Confirma o pagamento: atualiza o status do pedido na nuvem para "aprovado"
+        // Confirma o pagamento: atualiza o status do pedido na nuvem e debita o estoque de cada item
         function simularPagamento() {
             const btnText = document.getElementById('btn-text');
             const spinner = document.getElementById('loading-spinner');
@@ -143,9 +144,33 @@
                     } catch (err) {
                         console.warn('Essenza: não foi possível marcar o pedido como aprovado na nuvem.', err);
                     }
+
+                    await debitarEstoque(pedidoAtual.itens || []);
                 }
                 mostrarTela('tela-sucesso');
             }, 2000);
+        }
+
+        // Para cada item comprado que tenha um produto correspondente na nuvem, reduz o estoque.
+        async function debitarEstoque(itens) {
+            for (const item of itens) {
+                if (!item.apiId) continue; // produto sem controle de estoque (ex: fallback offline)
+                try {
+                    const res = await fetch(`${PRODUTOS_API_URL}/${item.apiId}`);
+                    if (!res.ok) continue;
+                    const produtoAtual = await res.json();
+                    if (produtoAtual.estoque === undefined || produtoAtual.estoque === null) continue;
+
+                    const novoEstoque = Math.max(0, Number(produtoAtual.estoque) - item.qtd);
+                    await fetch(`${PRODUTOS_API_URL}/${item.apiId}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ estoque: novoEstoque })
+                    });
+                } catch (err) {
+                    console.warn(`Essenza: não foi possível debitar estoque do produto ${item.apiId}.`, err);
+                }
+            }
         }
 
         carregarPedido();
