@@ -241,8 +241,8 @@
             document.querySelectorAll('.nav-link').forEach(a => a.classList.remove('active-tab'));
             document.querySelectorAll(`.nav-link[data-tab="${hash.substring(1)}"]`).forEach(a => a.classList.add('active-tab'));
 
-            if (hash === '#pedidos') renderizarPedidosAdmin();
-            if (hash === '#dashboard') renderizarDashboard();
+            if (hash === '#pedidos') { carregarPedidos().then(renderizarPedidosAdmin); }
+            if (hash === '#dashboard') { carregarPedidos().then(renderizarDashboard); }
 
             window.scrollTo(0, 0);
         }
@@ -409,65 +409,89 @@
             }
         }
 
-        // --- PEDIDOS (lidos do localStorage, mesma origem da loja) ---
-        function getPedidos() {
-            return JSON.parse(localStorage.getItem('essenzaPedidos')) || [];
+        // --- PEDIDOS (buscados na nuvem — todos os clientes) ---
+        const PEDIDOS_API_URL = 'https://6a8370cfcb486d243403b23a.mockapi.io/pedidos';
+        let pedidosCache = [];
+
+        async function carregarPedidos() {
+            try {
+                const res = await fetch(PEDIDOS_API_URL);
+                if (!res.ok) throw new Error(`Erro HTTP ${res.status}`);
+                pedidosCache = await res.json();
+            } catch (err) {
+                console.warn('Essenza Admin: falha ao carregar pedidos da nuvem.', err);
+                pedidosCache = null; // null indica falha de conexão (diferente de "nenhum pedido")
+            }
         }
 
         function renderizarPedidosAdmin() {
-            const pedidos = getPedidos();
             const lista = document.getElementById('lista-pedidos-admin');
 
-            if (pedidos.length === 0) {
-                lista.innerHTML = '<div class="bg-gray-50 border border-gray-200 p-8 text-center rounded"><p class="text-gray-500">Nenhum pedido registrado neste navegador ainda.</p><p class="text-xs text-gray-400 mt-2">Simule uma compra na loja para ver o pedido aparecer aqui.</p></div>';
+            if (pedidosCache === null) {
+                lista.innerHTML = '<div class="bg-red-50 border border-red-200 p-8 text-center rounded"><p class="text-red-500 text-sm mb-3">Não foi possível carregar os pedidos agora.</p><button onclick="carregarPedidos().then(() => { renderizarPedidosAdmin(); renderizarDashboard(); })" class="text-xs font-bold uppercase text-essenza-black underline">Tentar de novo</button></div>';
                 return;
             }
 
-            lista.innerHTML = pedidos.slice().reverse().map(ped => `
-                <div class="border border-gray-200 p-6 rounded bg-white shadow-sm">
-                    <div class="flex flex-col md:flex-row justify-between md:items-center gap-3 mb-4">
-                        <div>
-                            <p class="text-xs text-gray-400 font-bold uppercase tracking-widest">Pedido #${ped.id}</p>
-                            <p class="text-sm text-essenza-black mt-1 font-semibold">${ped.data}</p>
-                        </div>
-                        <div class="text-left md:text-right">
-                            <span class="bg-green-100 text-green-800 text-[10px] uppercase font-bold px-3 py-1 rounded-full inline-block mb-1">Pagamento Aprovado</span>
-                            <p class="text-xl font-bold text-essenza-black">R$ ${ped.total}</p>
-                        </div>
-                    </div>
-                    <div class="border-t border-gray-100 pt-3 space-y-1">
-                        ${(ped.itens || []).map(item => `
-                            <div class="flex justify-between text-xs text-gray-500">
-                                <span>${item.qtd}x ${escapeHtml(item.nome)}</span>
-                                <span>R$ ${(item.preco * item.qtd).toFixed(2).replace('.', ',')}</span>
+            if (pedidosCache.length === 0) {
+                lista.innerHTML = '<div class="bg-gray-50 border border-gray-200 p-8 text-center rounded"><p class="text-gray-500">Nenhum pedido registrado ainda.</p><p class="text-xs text-gray-400 mt-2">Simule uma compra na loja para ver o pedido aparecer aqui.</p></div>';
+                return;
+            }
+
+            lista.innerHTML = pedidosCache.slice().reverse().map(ped => {
+                const aprovado = ped.status === 'aprovado';
+                return `
+                    <div class="border border-gray-200 p-6 rounded bg-white shadow-sm">
+                        <div class="flex flex-col md:flex-row justify-between md:items-center gap-3 mb-4">
+                            <div>
+                                <p class="text-xs text-gray-400 font-bold uppercase tracking-widest">Pedido #${ped.id}</p>
+                                <p class="text-sm text-essenza-black mt-1 font-semibold">${escapeHtml(ped.cliente_nome || 'Cliente não identificado')}</p>
+                                <p class="text-xs text-gray-500">${escapeHtml(ped.cliente_telefone || '')}</p>
+                                <p class="text-xs text-gray-400 mt-1">${ped.data || ''}</p>
                             </div>
-                        `).join('')}
+                            <div class="text-left md:text-right">
+                                <span class="${aprovado ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'} text-[10px] uppercase font-bold px-3 py-1 rounded-full inline-block mb-1">${aprovado ? 'Pagamento Aprovado' : 'Aguardando Pagamento'}</span>
+                                <p class="text-xl font-bold text-essenza-black">R$ ${String(ped.total || 0).replace('.', ',')}</p>
+                            </div>
+                        </div>
+                        <div class="border-t border-gray-100 pt-3 space-y-1">
+                            ${(ped.itens || []).map(item => `
+                                <div class="flex justify-between text-xs text-gray-500">
+                                    <span>${item.qtd}x ${escapeHtml(item.nome)}</span>
+                                    <span>R$ ${(item.preco * item.qtd).toFixed(2).replace('.', ',')}</span>
+                                </div>
+                            `).join('')}
+                        </div>
                     </div>
-                </div>
-            `).join('');
+                `;
+            }).join('');
         }
 
         function renderizarDashboard() {
-            const pedidos = getPedidos();
-            const faturamento = pedidos.reduce((acc, p) => acc + (parseFloat(String(p.total).replace(',', '.')) || 0), 0);
-            const ticketMedio = pedidos.length > 0 ? faturamento / pedidos.length : 0;
+            if (pedidosCache === null) {
+                document.getElementById('dashboard-ultimos-pedidos').innerHTML = '<p class="text-sm text-red-500">Não foi possível carregar os pedidos agora.</p>';
+                return;
+            }
+
+            const aprovados = pedidosCache.filter(p => p.status === 'aprovado');
+            const faturamento = aprovados.reduce((acc, p) => acc + (parseFloat(String(p.total).replace(',', '.')) || 0), 0);
+            const ticketMedio = aprovados.length > 0 ? faturamento / aprovados.length : 0;
 
             document.getElementById('kpi-faturamento').innerText = `R$ ${faturamento.toFixed(2).replace('.', ',')}`;
-            document.getElementById('kpi-pedidos').innerText = pedidos.length;
+            document.getElementById('kpi-pedidos').innerText = aprovados.length;
             document.getElementById('kpi-ticket').innerText = `R$ ${ticketMedio.toFixed(2).replace('.', ',')}`;
 
             const ultimos = document.getElementById('dashboard-ultimos-pedidos');
-            if (pedidos.length === 0) {
+            if (pedidosCache.length === 0) {
                 ultimos.innerHTML = '<p class="text-sm text-gray-400">Nenhum pedido registrado ainda.</p>';
                 return;
             }
-            ultimos.innerHTML = pedidos.slice().reverse().slice(0, 5).map(ped => `
+            ultimos.innerHTML = pedidosCache.slice().reverse().slice(0, 5).map(ped => `
                 <div class="flex justify-between items-center text-sm border-b border-gray-50 pb-3">
                     <div>
-                        <p class="font-semibold text-essenza-black">Pedido #${ped.id}</p>
-                        <p class="text-xs text-gray-400">${ped.data}</p>
+                        <p class="font-semibold text-essenza-black">Pedido #${ped.id} — ${escapeHtml(ped.cliente_nome || 'Cliente não identificado')}</p>
+                        <p class="text-xs text-gray-400">${ped.data || ''} · ${ped.status === 'aprovado' ? 'Aprovado' : 'Pendente'}</p>
                     </div>
-                    <p class="font-bold text-essenza-black">R$ ${ped.total}</p>
+                    <p class="font-bold text-essenza-black">R$ ${String(ped.total || 0).replace('.', ',')}</p>
                 </div>
             `).join('');
         }
@@ -475,6 +499,7 @@
         // --- INICIALIZAÇÃO ---
         (async function init() {
             await carregarProdutos();
+            await carregarPedidos();
             renderizarProdutosAdmin();
             renderizarDashboard();
             router();
