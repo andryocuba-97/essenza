@@ -245,6 +245,7 @@
             <div class="text-center font-cinzel text-essenza-beige-dark tracking-widest text-[10px] border-t border-essenza-gray/30 py-6">
                 <p>ACENDA SENTIMENTOS, CRIE MEMÓRIAS.</p>
                 <p class="mt-2 text-gray-500 font-montserrat tracking-normal">© 2026 Essenza Velas. Trabalho Acadêmico.</p>
+                <p class="mt-3 font-montserrat tracking-normal"><a href="admin.html" class="text-gray-600 hover:text-essenza-gold underline">Área do Gestor</a></p>
             </div>
         </footer>
     </div>
@@ -654,8 +655,9 @@
             const totalFormatado = totalGlobal.toFixed(2);
             document.getElementById('modal-total-text').innerText = `R$ ${totalFormatado.replace('.', ',')}`;
             
-            // URL EXATA do seu repositório no GitHub Pages
-            const urlPagamento = `https://andryocuba-97.github.io/essenza/pagamento.html?valor=${totalFormatado}`;
+            // Monta a URL de pagamento com base no endereço atual (funciona em qualquer domínio/repositório onde o site estiver publicado)
+            const basePath = window.location.href.substring(0, window.location.href.lastIndexOf('/') + 1);
+            const urlPagamento = `${basePath}pagamento.html?valor=${totalFormatado}`;
             
             // Gerar imagem do QR Code
             const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(urlPagamento)}`;
